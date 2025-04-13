@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import message from "../../image/message.png"
+import { NavLink } from 'react-router';
 const HeaderContainer = styled.header`
   background: #13233D;
  // Темно-синий цвет фона
@@ -9,7 +10,7 @@ const HeaderContainer = styled.header`
   align-items: center;
   padding: 10px 20px;
   color: white;
-
+  margin-top:20px;
   @media (max-width: 600px) { 
     flex-direction: column; // Изменение направления для мобильных устройств
     align-items: flex-start; // Выравнивание элементов по началу
@@ -38,17 +39,18 @@ const ButtonContainer = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: #d9d9d9; // Цвет кнопок
+  background-color: #C3BFBF66; // Цвет кнопок
   color: #2b2d42;
   border: none;
-  border-radius: 20px;
+  border-radius: 10px;
+  font-weight:400;
   padding: 10px 15px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #b0b0b0; // Цвет кнопки при наведении
+    background-color:rgb(252, 252, 252); // Цвет кнопки при наведении
   }
 
   @media (max-width: 600px) {
@@ -57,6 +59,31 @@ const Button = styled.button`
     text-align: center; // Центрирование текста
   }
 `;
+const ButtonChat = styled(Button)`
+padding:1px 6px 1px 6px;
+ transition: background-color 0.3s;
+&:hover {
+ background-color:rgb(179, 179, 179); // Цвет кнопки при наведении
+}
+`
+const ButtonIn = styled(Button)`
+background:#000000;
+color:white;
+transition:0.3s;
+&:hover {
+   background-color:rgb(19, 19, 19);
+    transform:scale(1.05) 
+  }
+`
+const ButtonReg = styled(Button)`
+background:#ECECE5;
+color:#13233D;
+transition:0.3s;
+
+&:hover {
+    transform:scale(1.05) 
+  }
+`
 const FuncBlock = styled.div`
 display:flex;
 align-items: center
@@ -66,12 +93,15 @@ const Header: React.FC = () => {
   return (
     <HeaderContainer>
       <FuncBlock>
-        <Button>Новый чат</Button>
+        <ButtonChat><img src={message} title='New Chat' alt="" /></ButtonChat>
       <Title>Study Click</Title>
       </FuncBlock>
       <ButtonContainer>
-        <Button>Регистрация</Button>
-        <Button>Войти</Button>
+        <NavLink to={"/registration"}>
+        <ButtonReg>Регистрация</ButtonReg>
+
+        </NavLink>
+        <ButtonIn>Войти</ButtonIn>
       </ButtonContainer>
     </HeaderContainer>
   );
