@@ -12,8 +12,9 @@ const PageContainer = styled.div`
   justify-content: center; // Центрирование по горизонтали
   align-items: center;
   flex-direction:column;
-  height:80vh;
-  justify-content: flex-end
+  height:89vh;
+  justify-content: flex-end;
+  border-radius:20px
 `;
 
 const InputContainer = styled.div`
@@ -79,6 +80,13 @@ const BtnWrapper = styled.div`
 display:flex;
 gap:11px
 `
+const MessageWrapper = styled.div`
+width:670px;
+word-break:break-all;
+height:800px;
+overflow:auto;
+margin-bottom:5px;
+`
 interface el{
   key:string
 }
@@ -113,19 +121,24 @@ const ChatInput: React.FC = () => {
     }
   }, [input]); // Обновление каждый раз, когда изменяется input
   const sendMessage = () => {
-    AddMessage({desc:input,role:"user"})
-    setInput("")
+    if(input.trim() != ""){
+      AddMessage({desc:input,role:"user"})
+      setInput("")
+    }
   }
   const handleKeyPress = useCallback((event:el) => {
     if (event.key === "Enter") {
-      sendMessage();
-      setInput("")
+      if (input.trim() != "") {
+
+        sendMessage();
+        setInput("")
+      }
 
     }
   }, [sendMessage]);
   return (
     <PageContainer>
-      <div>{message_data.map((e) => <Message message={e.describe}/>)}</div>
+      <MessageWrapper >{message_data.map((e) => <Message role={e.role} message={e.describe}/>)}</MessageWrapper>
       <InputContainer>
         <TextArea 
           ref={textAreaRef} // Привязываем реф

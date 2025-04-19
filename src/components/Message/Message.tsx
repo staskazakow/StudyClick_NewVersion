@@ -1,16 +1,30 @@
 import React from 'react'
 import styled from 'styled-components'
 interface Props {
-  message:string
+    message:string,
+    role:any
 }
 const Wrapper = styled.div`
-width:
+display:flex;
+
 `
-const Message = ({message}:Props) => {
+const UserMessage = styled.div`
+display:flex;
+justify-content: flex-end;
+min-height:20px;
+background:#041839 ;
+margin-bottom:3px;
+`
+const BotMessage = styled(UserMessage)`
+justify-content: flex-start;
+`
+const Message = ({role,message}:Props) => {
+  console.log(role)
   return (
     <div>
-      {message}
+      {role == "user" ? <UserMessage>{message}</UserMessage> : <BotMessage>{message}</BotMessage>}
     </div>
+    
   )
 }
 
