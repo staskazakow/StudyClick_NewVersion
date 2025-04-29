@@ -1,17 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 let initialState:state = {
-    messages_data:[]
+    messages_data:[],
+    field_name:"Помощник",
 }
 export interface Chat{
     describe:string,
     role:string
 }
 interface state{
-    messages_data:Array<Chat>
+    messages_data:Array<Chat>,
+    field_name:string
 }
 interface Action {
     payload:{
-        desc:string,
+        describe:string,
         role:string
     },
     type:{}
@@ -21,7 +23,13 @@ const ChatSlice = createSlice({
     initialState,
     reducers:{
         AddMessage(state,{payload:action}:Action){
-            state.messages_data.push({describe:action.desc, role:action.role})
+            state.messages_data.push({describe:action.describe, role:action.role})
+        },
+        SetFieldName(state,{payload:action}){
+            state.field_name = action
+        },
+        AddChat(state,{payload}){
+            state.messages_data = []
         }
 
     }

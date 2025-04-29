@@ -2,6 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import message from "../../image/message.png"
 import { NavLink } from 'react-router';
+import { useSelector } from 'react-redux';
+import {state}  from '../../redux_toolkit/store';
+import { useActions } from '../../common/useActions';
+import { useLogOutMutation } from '../../redux_toolkit/api/authApi';
+import Cookies from 'js-cookie';
 const HeaderContainer = styled.header`
   background: #13233D;
  // Темно-синий цвет фона
@@ -59,7 +64,7 @@ const Button = styled.button`
     text-align: center; // Центрирование текста
   }
 `;
-const ButtonChat = styled(Button)`
+export const ButtonChat = styled(Button)`
 padding:1px 6px 1px 6px;
  transition: background-color 0.3s;
 &:hover {
@@ -86,23 +91,42 @@ transition:0.3s;
 `
 const FuncBlock = styled.div`
 display:flex;
-align-items: center
+align-items: center;
+gap:5px;
 `
 
 const Header: React.FC = () => {
+  const auth = useSelector((state:state) => state.app.auth)
+  const {setAuth} = useActions()
+  const {AddChat} = useActions()
+  const [Out,{data}] = useLogOutMutation()
+  const logOut = () => {
+    setAuth(false)
+    Out(1)
+    Cookies.remove("refresh")
+    localStorage.removeItem('accessToken')
+  }
+  console.log(auth)
+
   return (
     <HeaderContainer>
       <FuncBlock>
-        <ButtonChat><img src={message} title='New Chat' alt="" /></ButtonChat>
+        <ButtonChat><img onClick={() => AddChat(1)} src={message} title='New Chat' alt="" /></ButtonChat>
       <Title>Study Click</Title>
       </FuncBlock>
-      <ButtonContainer>
-        <NavLink to={"/registration"}>
-        <ButtonReg>Регистрация</ButtonReg>
+      {auth ?
+      <div onClick={logOut}>Log out</div>
+      : <ButtonContainer>
+      <NavLink to={"/register"}>
+      <ButtonReg>Регистрация</ButtonReg>
 
-        </NavLink>
-        <ButtonIn>Войти</ButtonIn>
-      </ButtonContainer>
+      </NavLink>
+      <NavLink to={"/login"}>
+
+      <ButtonIn>Войти</ButtonIn>
+      </NavLink>
+    </ButtonContainer> }
+     
     </HeaderContainer>
   );
 };

@@ -17,14 +17,14 @@ const MainContent: React.FC = () => {
   console.log(message_data)
   return (
     <MainContainer>
-      {/* {message_data.length == 0 &&  
+      {message_data.length == 0 &&  
       <div>
       <h1 style={{fontWeight:"300",fontFamily:"sans-serif"}}>Добро пожаловать в Study Click</h1>
       <p style={{color:"#C3BFBF",}}>Чем помочь сегодня?</p>
       </div>
-      } */}
+      }
       
-      {<div>{message_data.map((e) => <div>{e.describe}</div>)}</div>}
+
     </MainContainer >
   );
 };

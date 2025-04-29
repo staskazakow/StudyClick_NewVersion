@@ -12,6 +12,7 @@
     "@types/node": "^16.18.126",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
+    "js-cookie": "^3.0.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
@@ -45,6 +46,8 @@
     ]
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "@types/node-fetch": "^2.6.12",
     "ajv": "^7.2.4",
     "typescript": "^5.8.3"
   }
