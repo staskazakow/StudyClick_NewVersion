@@ -69,7 +69,7 @@ const baseQueryWithReauth: BaseQueryFn<
              console.log('No refresh token found, redirecting to login');
              // Нет refresh токена
              localStorage.removeItem('accessToken');
-             window.location.href = '/login'; // Перенаправление
+            //  window.location.href = '/login'; // Перенаправление
         }
     }
 
@@ -82,11 +82,19 @@ interface AuthResponse {
     access: string;
     refresh?: string; // refresh токен может приходить при логине
 }
-
-interface User {
+export interface PassInterface {
+        id:number;
+        name:string;
+        price:string;
+        duration:number;
+        tokens_per_month:number;
+}
+export interface User {
     id: number;
     username: string;
     email: string;
+    available_tokens:number;
+    subscription:null | PassInterface
 }
 
 interface Credentials {
@@ -174,7 +182,7 @@ export const authApi = createApi({
              },
         }),
         getUser: builder.query<User, void>({
-            query: () => '/user', // Отсутствует конечный слэш
+            query: () => '/auth/users/me/', 
         }),
         getJWT: builder.mutation({
             query: (credentials) => ({
@@ -182,6 +190,19 @@ export const authApi = createApi({
                 method: 'POST',
                 body: credentials,
             }),
+            async onQueryStarted(args, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    localStorage.setItem('accessToken', data.access);
+                    if (data?.refresh) {
+                        Cookies.set("refresh", data.refresh, { expires: 30 }); // Опции secure/sameSite отсутствуют
+                    }
+                    // Диспатч setAuth не вызывается здесь в предыдущем коде
+                } catch (error) {
+                    console.error('Ошибка при входе в систему (onQueryStarted):', error);
+                    // Очистка токенов при ошибке в onQueryStarted отсутствует в предыдущем коде
+                }
+           },
         }),
 
         logOut: builder.mutation<void, void>({

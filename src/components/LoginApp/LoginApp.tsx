@@ -114,7 +114,7 @@ const Logo = styled.div`
   color: #333;
 `;
 
-const ArrowLeft = styled.div`
+export const ArrowLeft = styled.div`
   cursor: pointer;
   padding: 5px;
   transition: opacity 0.2s;
@@ -500,7 +500,10 @@ const LoginApp: React.FC<LoginAppProps> = () => {
 
 
             <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              <PlanUpped>Улучшить план</PlanUpped>
+             <NavLink style={{textDecoration:"none"}} to={"/tarif"}>
+              
+               <PlanUpped>Улучшить план</PlanUpped>
+              </NavLink>
               <NavLink to={"/profile"} style={{cursor:"pointer"}}>
                 <img src={user} alt="User" style={{width: '24px', height: '24px'}} />
               </NavLink>

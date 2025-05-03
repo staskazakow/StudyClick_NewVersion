@@ -15,6 +15,7 @@ import LoginApp from './components/LoginApp/LoginApp';
 import Profile from './components/Profile/Profile';
 import Settings from './components/Profile/Settings';
 import { Chat } from './redux_toolkit/reducers/ChatSlice';
+import TariffPage from './components/Pass/Pass';
 
 const AppContainer = styled.div`
   font-family: "Inter", sans-serif;
@@ -24,7 +25,7 @@ const AppContainer = styled.div`
   width: 100%;
   color: black;
   font-size:20px;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -120,6 +121,7 @@ const App: React.FC = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/settings' element={<Settings />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/tarif' element ={<TariffPage/>}/>
         <Route
           path='/'
           element={auth ? <LoginApp /> : <Main/>}
