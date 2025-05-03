@@ -14,7 +14,7 @@ const PageContainer = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    min-height: 60vh; /* Use min-height for better responsiveness */
+    min-height:45vh; /* Use min-height for better responsiveness */
     justify-content: flex-end;
     border-radius: 20px;
     padding: 10px; /* Add padding for smaller screens */
@@ -133,7 +133,7 @@ const HelperDropdown = styled.div<HelperDropdownProps>`
 interface el {
     key: string;
 }
-interface field {
+export interface field {
     id: number,
     name: string
 }
@@ -196,9 +196,7 @@ const ChatInput: React.FC = () => {
     const setStudyId = (id: number, name: string) => {
         localStorage.setItem("study_field_id", id.toString())
         localStorage.setItem("study_field_name", name)
-        console.log(helperButtonText)
         setHelperButtonText(name)
-        console.log(helperButtonText)
     }
 
     return (

@@ -93,6 +93,7 @@ const FuncBlock = styled.div`
 display:flex;
 align-items: center;
 gap:5px;
+margin-bottom:10px;
 `
 
 const Header: React.FC = () => {
@@ -102,7 +103,7 @@ const Header: React.FC = () => {
   const [Out,{data}] = useLogOutMutation()
   const logOut = () => {
     setAuth(false)
-    Out(1)
+    Out()
     Cookies.remove("refresh")
     localStorage.removeItem('accessToken')
   }

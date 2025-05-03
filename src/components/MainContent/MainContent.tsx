@@ -6,23 +6,26 @@ import { Chat } from '../../redux_toolkit/reducers/ChatSlice';
 
 const MainContainer = styled.div`
   text-align: center;
-  margin: 50px;
   color: #ffff;
   font-weight: 300;
   font-family:sans-serif;
+  & > h1 {
+  @media (max-width:600px){
+  font-size:22px;
+  }
+  }
+
 `;
 
+
 const MainContent: React.FC = () => {
-  const message_data:Array<Chat> = useSelector((state:state) => state.chat.messages_data)
-  console.log(message_data)
   return (
-    <MainContainer>
-      {message_data.length == 0 &&  
-      <div>
+    <MainContainer> 
+      {/* <div> */}
       <h1 style={{fontWeight:"300",fontFamily:"sans-serif"}}>Добро пожаловать в Study Click</h1>
       <p style={{color:"#C3BFBF",}}>Чем помочь сегодня?</p>
-      </div>
-      }
+      {/* </div> */}
+      
       
 
     </MainContainer >

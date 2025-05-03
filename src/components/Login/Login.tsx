@@ -48,7 +48,7 @@ const Login = () => {
             const loginres = await login({ username: email, password: password });
             if ('error' in loginres) {
                 const apiError = loginres.error as ApiErrorResponse;
-                setErrorMessage(apiError.data?.message || 'Login failed');
+                setErrorMessage(apiError.data?.message);
                 return;
             }
 

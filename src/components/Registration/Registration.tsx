@@ -65,15 +65,12 @@ const Registration = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage(null); // Clear any previous error messages
-
-
         try {
             const registerResult = await register({ email, username: name, password });
-
-
             if ('error' in registerResult) {
                 const apiError = registerResult.error as ApiErrorResponse;
-                setErrorMessage(apiError.data?.message || 'Registration failed');
+                console.log(apiError)
+                setErrorMessage(apiError.data?.message);
                 return;
             }
 
@@ -83,6 +80,7 @@ const Registration = () => {
 
             if ('error' in jwtResult) {
                 const apiError = jwtResult.error as ApiErrorResponse;
+                console.log(apiError)
                 setErrorMessage(apiError.data?.message || 'Failed to get JWT');
                 return;
             }
@@ -90,6 +88,7 @@ const Registration = () => {
 
             // If both operations were successful:
             setAuth(true);
+            window.location.href = '/';
             //console.log('Registration and JWT retrieval successful'); //Better to use a logger
         } catch (error) {
             console.error('An unexpected error occurred:', error);
@@ -100,7 +99,7 @@ const Registration = () => {
 
     const isLoading = isRegistering || isGettingJWT;
 
-
+    console.log(errorMessage)
     return (
         <Wrapper>
             <NavLink style={{ marginRight: '5px' }} to="/">
