@@ -1,8 +1,6 @@
 import React, { JSX, ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { state } from '../../redux_toolkit/store';
-import { Chat } from '../../redux_toolkit/reducers/ChatSlice';
 
 const MainContainer = styled.div`
   text-align: center;

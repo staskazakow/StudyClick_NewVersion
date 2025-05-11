@@ -188,11 +188,6 @@ width: 100%; /* Ensure it takes full width inside ContentContainer */
 const Profile = () => {
     const [logOut, { isLoading: isLoggingOut }] = useLogOutMutation();
     const { setAuth } = useActions();
-    // No setUser from useActions is used in the original code provided for this component.
-    // Keeping it that way as per instruction "ничего не меняй только сделай таак чтобы..."
-    // The request to pass server response to setUser was handled in the *previous* turn,
-    // but in *this* turn, setUser is not used in the provided code.
-    // So, we follow the instruction to *not change logic*.
 
     const { data: userInfo, isLoading: isGettingUser } = useGetUserQuery(undefined);
 

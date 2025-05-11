@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
+import React, { useState, useEffect, useRef } from 'react'; // Добавлен useRef
 import styled from 'styled-components';
 import user from "../../image/User.png";
 import { ButtonChat } from '../Header/Header';
@@ -7,11 +7,13 @@ import Left from "../../image/BackArrow.png";
 import { useActions } from '../../common/useActions';
 import { useSelector } from 'react-redux';
 import { state } from '../../redux_toolkit/store';
-import { Chat } from '../../redux_toolkit/reducers/ChatSlice';
+import { Chat, Message } from '../../redux_toolkit/reducers/ChatSlice';
 import { useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
 import { field } from '../ChatInput/ChatInput';
 import { NavLink } from 'react-router';
 import RightArrow from "../../image/RightArrow.svg"
+import { useCreateMessageMutation, useGetChatsQuery } from '../../redux_toolkit/api/chatsApi';
+
 
 // Определение брейкпоинтов для адаптивности
 const breakpoints = {
@@ -19,10 +21,12 @@ const breakpoints = {
   tablet: '1024px',
 };
 
+
 interface StyledProps {
   isCollapsed?: boolean;
   isOpen?: boolean;
 }
+
 
 export const Wrapper = styled.div`
   display: flex;
@@ -40,20 +44,17 @@ export const Wrapper = styled.div`
     height: auto;
     min-height: 100vh;
     padding: 10px;
-    gap: 10px; // Отступ между ChatWindow и DialogWindow на мобильных
+    gap: 10px;
   }
 `;
 
-// Боковая панель чатов
 const ChatWindow = styled.div<StyledProps>`
-  width: ${({ isOpen }) => isOpen ? '20vw' : '0'};
-  // min-width: ${({ isOpen }) => isOpen ? '250px' : '0'};
-  max-width: ${({ isOpen }) => isOpen ? '350px' : '0'};
+  width: ${({ isOpen }) => isOpen ? 'clamp(250px, 20vw, 350px)' : '0'};
   display: flex;
   flex-direction: column;
   background-color: #ECECE5;
   border-radius: 30px;
-  margin-right: ${({ isOpen }) => isOpen ? '20px' : '0'}; // Отступ справа от панели
+  margin-right: ${({ isOpen }) => isOpen ? '20px' : '0'};
   transition: all 0.3s ease;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -63,18 +64,18 @@ const ChatWindow = styled.div<StyledProps>`
     width: 100%;
     min-width: 0;
     max-width: none;
-    height: ${({ isOpen }) => isOpen ? '25vh' : '0'}; // Уменьшаем высоту на мобильных, /чтобы Dialog занимал больше места
-    margin-right: 0; // Убираем правый отступ
+    height: ${({ isOpen }) => isOpen ? '25vh' : '0'};
+    margin-right: 0;
     border-radius: 10px;
-    flex-shrink: ${({ isOpen }) => isOpen ? 0 : 1}; // Сжимаем до 0 если закрыт
+    flex-shrink: ${({ isOpen }) => isOpen ? 0 : 1};
   }
 `;
 
-// Кнопка сворачивания правой панели (на десктопе)
 const CollapseButton = styled.button<StyledProps>`
   width: 24px;
   height: 24px;
   color: white;
+  background-color: transparent;
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -83,7 +84,7 @@ const CollapseButton = styled.button<StyledProps>`
   justify-content: center;
   padding: 0;
   z-index: 1;
-  transition: left 0.3s ease, right 0.3s ease, background-color 0.3s ease; // Анимируем left и right
+  transition: left 0.3s ease, right 0.3s ease, background-color 0.3s ease;
   img {
     width: 20px;
     height: 20px;
@@ -92,7 +93,7 @@ const CollapseButton = styled.button<StyledProps>`
   }
 
   @media (max-width: ${breakpoints.mobile}) {
-     display: none; // Скрываем кнопку сворачивания Prompt на мобильных
+    display: none;
   }
 `;
 
@@ -118,6 +119,13 @@ export const ArrowLeft = styled.div`
   cursor: pointer;
   padding: 5px;
   transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    max-width: 20px;
+    max-height: 20px;
+  }
   &:hover {
     opacity: 0.8;
   }
@@ -147,90 +155,86 @@ const Chats = styled.div`
   }
 `;
 
-// Окно диалога и Prompt вместе
 const DialogWindow = styled.div<StyledProps>`
-  flex-grow: 1; // Занимает оставшееся горизонтальное пространство на десктопе/планшете
+  flex-grow: 1;
   height: 100%;
   background-color: #ECECE5;
   border-radius: 30px;
   display: flex;
-  flex-direction: row; // Ряд на десктопе/планшете
+  flex-direction: row;
   position: relative;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Corrected box-shadow value
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 
   @media (max-width: ${breakpoints.mobile}) {
-    flex-direction: column; // Колонка на мобильных
-    height: auto; // Высота по контенту
-    flex-grow: 1; // Занимает оставшееся вертикальное пространство на мобильных
-    min-height: 0; // Снимаем минимальную высоту с DialogWindow
+    flex-direction: column;
+    height: auto;
+    flex-grow: 1;
+    min-height: 0;
     border-radius: 10px;
   }
 `;
 
-// Основная часть диалога (сообщения и ввод)
 const Dialog = styled.div<StyledProps>`
   display: flex;
   flex-direction: column;
   padding: 20px;
-  flex-grow: 1; // Занимает все доступное пространство в DialogWindow по горизонтали (десктоп) или вертикали (мобильный)
-  overflow-y: auto; // Ensure Dialog itself can scroll if content is too tall
+  flex-grow: 1;
+  overflow-y: auto;
   position: relative;
-
-  // На десктопе/планшете Dialog занимает пространство, оставшееся после Prompt
   width: ${({ isCollapsed }: StyledProps) => (isCollapsed ? '100%' : 'auto')};
-  border-right: ${({ isCollapsed }: StyledProps) => (isCollapsed ? 'none' : '1px solid black')}; // Разделитель с Prompt
+  border-right: ${({ isCollapsed }: StyledProps) => (isCollapsed ? 'none' : '1px solid black')};
 
   @media (max-width: ${breakpoints.mobile}) {
     border-right: none;
-    border-bottom: ${({ isCollapsed }: StyledProps) => (isCollapsed ? 'none' : '1px solid black')}; // Разделитель с Prompt на мобильных, только если Prompt не свернут
+    border-bottom: ${({ isCollapsed }: StyledProps) => (isCollapsed ? 'none' : '1px solid black')};
     padding: 15px;
-    flex-grow: 1; // Занимает доступное пространство над Prompt на мобильных
-    min-height: 40vh; // Минимальная высота, чтобы обеспечить видимость диалога
-    width: 100%; // Полная ширина на мобильных
-    overflow-y: auto; // Explicitly ensure scroll on mobile
+    flex-grow: 1;
+    min-height: 40vh;
+    width: 100%;
+    overflow-y: auto;
   }
 `;
 
-// Правая панель с ассистентами
 const Prompt = styled.div<StyledProps>`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: ${({ isCollapsed }) => (isCollapsed ? '0' : '18vw')}; // Responsive width
-  // min-width: ${({ isCollapsed }) => (isCollapsed ? '0' : '250px')}; // Minimum width when open
-  // max-width: ${({ isCollapsed }) => (isCollapsed ? '0' : '350px')}; // Maximum width when open
+  width: ${({ isCollapsed }) => (isCollapsed ? '0' : 'clamp(220px, 18vw, 300px)')};
   padding: ${({ isCollapsed }) => (isCollapsed ? '20px 0' : '20px')};
   border-left: ${({ isCollapsed }) => (isCollapsed ? 'none' : '1px solid black')};
   transition: all 0.3s ease;
-  overflow: hidden; // Keep overflow hidden on the container itself
+  overflow: hidden;
+  flex-shrink: 0;
 
   @media (max-width: ${breakpoints.mobile}) {
     width: 100%;
+    min-width: 0;
+    max-width: none;
     height: ${({ isCollapsed }) => (isCollapsed ? '0' : 'auto')};
-    max-height: ${({ isCollapsed }) => (isCollapsed ? '0' : '30vh')}; // Oграничиваем высоту при развернутом
-    min-height: 0; // Позволяем сжаться до 0
+    max-height: ${({ isCollapsed }) => (isCollapsed ? '0' : '30vh')};
+    min-height: 0;
     border-left: none;
-    border-top: ${({ isCollapsed }) => (isCollapsed ? 'none' : '1px solid black')}; // Разделитель сверху на мобильных
+    border-top: ${({ isCollapsed }) => (isCollapsed ? 'none' : '1px solid black')};
     padding: ${({ isCollapsed }) => (isCollapsed ? '0 15px' : '15px')};
-    transition: all 0.3s ease, max-height 0.3s ease;
-    overflow-y: auto; // Allow Prompt panel itself to scroll if needed on mobile
+    overflow-y: auto;
   }
 `;
 
 const StyledButtonChat = styled(ButtonChat)`
   border: none;
-  // background: none;
-
   cursor: pointer;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  img {
+    display: block;
+  }
   @media (max-width: ${breakpoints.mobile}) {
-    width:50%;
-    
+    width: auto;
   }
 `;
 
@@ -239,10 +243,12 @@ const MessageBlock = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   flex-grow: 1;
+  width: 100%;
+  overflow: hidden;
 
   @media (max-width: ${breakpoints.mobile}) {
     height: auto;
-    min-height: 0; // Снимаем мин-высоту, т.к. она задана для Dialog
+    min-height: 0;
   }
 `;
 
@@ -267,10 +273,10 @@ const HeaderBlock = styled.div`
 
   @media (max-width: ${breakpoints.mobile}) {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     margin-bottom: 15px;
-    gap: 10px; // Отступ между элементами заголовка на мобильных
-    width: 100%; // Take full width on mobile
+    gap: 10px;
+    width: 100%;
   }
 `;
 
@@ -278,15 +284,17 @@ const FieldsBtn = styled.div`
   padding: 3px 10px;
   background: #D9D9D9;
   border-radius: 30px;
-  font-family: Inter;
-  line-height: 100%;
+  font-family: Inter, sans-serif;
+  line-height: 1.2;
   letter-spacing: 0%;
   color: black;
   cursor: pointer;
   flex-shrink: 0;
+  text-align: center;
 
   @media (max-width: ${breakpoints.mobile}) {
-     margin-bottom: 0; // Убираем отступ снизу, т.к. используем gap в HeaderBlock
+    margin-bottom: 0;
+    padding: 8px 10px;
   }
 `;
 
@@ -296,19 +304,21 @@ const PlanUpped = styled.div`
   border-radius: 30px;
   color: white;
   flex-shrink: 0;
+  text-align: center;
+  font-size: 0.9em;
 `;
 
 const Messages = styled.div`
   overflow-y: auto;
   flex-grow: 1;
   margin-bottom: 10px;
-  padding-right: 10px; // Keep padding for scrollbar space
+  padding: 0 10px 0 0;
+  display: flex;
+  flex-direction: column;
 
-  // Add flexible height on mobile
   @media (max-width: ${breakpoints.mobile}) {
-    flex-grow: 1; // Still grow to take available space
+    padding-right: 5px;
   }
-
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -330,21 +340,20 @@ const AssistantsList = styled.ul`
   display: flex;
   flex-direction: column;
   list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
   gap: 8px;
-  margin-top: 0;
   background: #fff;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  overflow-y: auto; // Make the list scrollable if it exceeds max height
-  max-height: 20vh; // Limit height of the list within the Prompt panel
+  overflow-y: auto;
+  max-height: 50vh;
 
-  @media (min-width: ${breakpoints.mobile}) {
-     max-height: none; // No fixed max height on desktop/tablet
-     overflow-y: visible; // No overflow scrolling on desktop/tablet list
+  @media (max-width: ${breakpoints.mobile}) {
+     max-height: 20vh;
   }
 `;
-
 
 const Asisstant = styled.li`
   color: black;
@@ -353,9 +362,11 @@ const Asisstant = styled.li`
   border-radius: 20px;
   display: flex;
   justify-content: center;
+  align-items: center;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s;
+  text-align: center;
 
   &:hover {
     background-color: #13233D55;
@@ -363,20 +374,26 @@ const Asisstant = styled.li`
 `;
 
 const MessagesItem = styled.div`
-  color: black;
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 10px;
-  // max-width: 100%;
-  word-break: break-word;
-  background-color: #D9D9D9;
   padding: 8px 12px;
   border-radius: 15px;
+  margin-bottom: 10px;
+  word-break: break-word;
+  max-width: 80%;
+  width: max-content;
+  color: black;
+  line-height: 1.4;
+
+  /* Default for user messages */
+  background-color: #D9D9D9;
   align-self: flex-end;
-  width:max-content;
+
   &.assistant {
     background-color: #B2CEE2;
     align-self: flex-start;
+  }
+
+  @media (max-width: ${breakpoints.mobile}) {
+    max-width: 85%;
   }
 `;
 
@@ -386,39 +403,69 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   const [message, setMessage] = useState<string>("");
   const [showAssistants, setShowAssistants] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-  const { AddMessage } = useActions();
-  const { data } = useGetFieldsQuery();
+  const { AddMessage,PushMessage,SetChats, SetCurrentChat: SetCurrentChatMessages } = useActions();
+  const { data: fieldsApiData } = useGetFieldsQuery();
   const [isPromptCollapsed, setIsPromptCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false); // Use state for mobile status
+  const [isMobile, setIsMobile] = useState(false);
+  const [createMessage,{data:bot_message}] = useCreateMessageMutation()
+  const {data:chats} = useGetChatsQuery(0)
 
-  // Effect to update isMobile state on mount and window resize
+  // Ref для контейнера сообщений для автопрокрутки
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.matchMedia(`(max-width: ${breakpoints.mobile})`).matches);
     };
-
-    checkMobile(); // Initial check
-    window.addEventListener('resize', checkMobile); // Add listener
-
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
     return () => {
-      window.removeEventListener('resize', checkMobile); // Clean up listener
+      window.removeEventListener('resize', checkMobile);
     };
   }, []);
 
+  useEffect(() => {
+    if (chats) {
+      SetChats(chats);
+    }
+  }, [chats, SetChats]);
+  
+  const messagesFromStore: Array<Message> = useSelector((state: state) => state.chat.current_chat);
+  // Эффект для автоматической прокрутки вниз при изменении сообщений
+  useEffect(() => {
+      if (messagesEndRef.current) {
+          messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+      }
+  }, [messagesFromStore,messagesEndRef]); // Зависимости: массив сообщений и сам ref
 
-  const sendMessage = (): void => {
+
+  const sendMessage = async () => {
     if (message.trim() !== "") {
-      // Assuming AddMessage can handle the message object
-      AddMessage({ describe: message, role: "user" });
-      setMessage("");
+      PushMessage({ message: message, role: "user" })
+      try {
+        const studyFieldId = localStorage.getItem("study_field_id");
+        const chatId = localStorage.getItem("chat_id");
+        const res = await createMessage({
+            message,
+            study_field_id: studyFieldId,
+            chat_id: chatId ? Number(chatId) : 0
+        });
+        setMessage("");
+        if (res.data && res.data.response) {
+            PushMessage({ message: res.data.response, role: "bot" });
+        } else {
+            console.error("Response from createMessage is not as expected:", res);
+        }
+      } catch (error) {
+        console.error("Failed to send message:", error);
+      }
     }
   };
 
   const togglePrompt = () => {
     setIsPromptCollapsed(!isPromptCollapsed);
-    // Close assistant list when Prompt panel is collapsed
     if (!isPromptCollapsed) {
-        setShowAssistants(false);
+      setShowAssistants(false);
     }
   };
 
@@ -437,13 +484,37 @@ const LoginApp: React.FC<LoginAppProps> = () => {
     }
   };
 
-  const message_data: Array<Chat> = useSelector((state: state) => state.chat.messages_data);
-
   const setStudyId = (id: number, name: string): void => {
     localStorage.setItem("study_field_id", id.toString());
     localStorage.setItem("study_field_name", name);
   };
 
+  const [currentChatObj, setCurrentChatObj] = useState<Chat | null>(null);
+
+  const HandleChat = (id: string | number) => {
+    const numericId = Number(id);
+    localStorage.setItem("chat_id", numericId.toString());
+
+    if (chats) {
+      const selectedChat = chats.find((chat: Chat) => chat.id === numericId );
+      if (selectedChat) {
+        setCurrentChatObj(selectedChat);
+        SetCurrentChatMessages(selectedChat.messages || []);
+        console.log("Current chat selected:", selectedChat);
+      } else {
+        console.warn(`Chat with id ${numericId} not found.`);
+        setCurrentChatObj(null);
+        SetCurrentChatMessages([]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const storedChatId = localStorage.getItem("chat_id");
+    if (storedChatId && chats && chats.length > 0) {
+        HandleChat(storedChatId);
+    }
+  },[chats]);
 
   return (
     <Wrapper>
@@ -458,135 +529,112 @@ const LoginApp: React.FC<LoginAppProps> = () => {
           </ArrowLeft>
         </NavBlock>
         <Chats>
-          {/* Здесь можно маппить реальные чаты */}
-          <div>Chat 1</div>
-          <div>Chat 2</div>
-          <div>Chat 3</div>
-          <div>Chat 4</div>
+          {chats && chats.map((e:Chat) => (
+            <div key={e.id} onClick={() => HandleChat(e.id)}>{e.title}</div>
+          ))}
         </Chats>
       </ChatWindow>
 
-      {/* Pass isCollapsed state to DialogWindow */}
       <DialogWindow isOpen={isSidebarOpen}>
-        {/* Pass isCollapsed to Dialog to adjust its width/border */}
         <Dialog isCollapsed={isPromptCollapsed}>
           <HeaderBlock>
-            {/* Кнопка открытия левой панели, когда она закрыта (только на десктопе) */}
-            {!isSidebarOpen && !isMobile && (
+            {!isSidebarOpen && (
               <ArrowLeft onClick={toggleSidebar} style={{ marginRight: '10px' }}>
                 <img src={RightArrow} alt="Open Sidebar" />
               </ArrowLeft>
             )}
-            {!isSidebarOpen && isMobile && (
-              <ArrowLeft onClick={toggleSidebar} style={{ marginRight: '10px' }}>
-                <img src={RightArrow} alt="Open Sidebar" />
-              </ArrowLeft>
-            )}
-             {/* Кнопка открытия Prompt на мобильных (показываем, только когда Prompt свернут) */}
-            {isMobile && isPromptCollapsed && (
-                 <FieldsBtn onClick={togglePrompt} style={{ cursor: 'pointer' }}>
-                    Асисстенты
-                 </FieldsBtn>
-            )}
-             {/* Кнопка сворачивания Prompt на мобильных (показываем, только когда Prompt развернут) */}
-            {isMobile && !isPromptCollapsed && (
-                 <FieldsBtn onClick={togglePrompt} style={{ cursor: 'pointer' }}>
-                    Свернуть
-                 </FieldsBtn>
+
+            {isMobile && (
+                isPromptCollapsed ? (
+                    <FieldsBtn onClick={togglePrompt}>Асисстенты</FieldsBtn>
+                ) : (
+                    <FieldsBtn onClick={togglePrompt}>Свернуть</FieldsBtn>
+                )
             )}
 
-            {/* Кнопка "Сфера обучения" на десктопе/планшете */}
-            {!isMobile && <FieldsBtn>Сфера обучения</FieldsBtn>}
+            {!isMobile && <FieldsBtn>{localStorage.getItem("study_field_name") || 'Сфера обучения'}</FieldsBtn>}
 
-
-            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-             <NavLink style={{textDecoration:"none"}} to={"/tarif"}>
-              
-               <PlanUpped>Улучшить план</PlanUpped>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center", marginLeft: !isMobile && isSidebarOpen ? "auto" : "0" }}>
+              <NavLink style={{textDecoration:"none"}} to={"/tarif"}>
+                <PlanUpped>Улучшить план</PlanUpped>
               </NavLink>
               <NavLink to={"/profile"} style={{cursor:"pointer"}}>
-                <img src={user} alt="User" style={{width: '24px', height: '24px'}} />
+                <img src={user} alt="User" style={{width: '24px', height: '24px', display: 'block'}} />
               </NavLink>
-               {/* Кнопка сворачивания Prompt на десктопе/планшете */}
-               {!isMobile && (
-                 <CollapseButton
-                   isCollapsed={isPromptCollapsed}
-                   onClick={togglePrompt}
-                 >
-                   <img
-                     src={isPromptCollapsed ? RightArrow : Left} // Стрелка меняет направление
-                     alt={isPromptCollapsed ? "Развернуть Prompt" : "Свернуть Prompt"}
-                   />
-                 </CollapseButton>
-               )}
+              {!isMobile && (
+                <CollapseButton
+                  isCollapsed={isPromptCollapsed}
+                  onClick={togglePrompt}
+                >
+                  <img
+                    src={isPromptCollapsed ? RightArrow : Left}
+                    alt={isPromptCollapsed ? "Развернуть Prompt" : "Свернуть Prompt"}
+                  />
+                </CollapseButton>
+              )}
             </div>
           </HeaderBlock>
 
           <MessageBlock>
-            <Messages>
-              {message_data.length > 0 ? (
-                message_data.map((e, index) => (
-                   // Apply 'assistant' class based on role
+            {/* Привязываем ref к контейнеру сообщений */}
+            <Messages ref={messagesEndRef}>
+              { messagesFromStore && messagesFromStore.length > 0 ? (
+                messagesFromStore.map((e, index) => (
                   <MessagesItem key={index} className={e.role === 'assistant' ? 'assistant' : ''}>
-                    {e.describe}
+                    {e.message}
                   </MessagesItem>
                 ))
               ) : (
-                <div>Сообщений не найдено</div>
+                <div style={{textAlign: 'center', color: '#777', marginTop: '20px'}}>
+                    {currentChatObj ? "Сообщений не найдено" : "Выберите чат для начала общения"}
+                </div>
               )}
             </Messages>
             <InputBlock
               value={message}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Чем помочь?"
+              placeholder={currentChatObj ? "Чем помочь?" : "Выберите чат"}
+              disabled={!currentChatObj}
             />
           </MessageBlock>
         </Dialog>
 
-         {/* Prompt панель - скрывается на мобильных, если свернута, или отображается под Dialog */}
-         {(!isMobile || !isPromptCollapsed) && (
-            <Prompt isCollapsed={isPromptCollapsed}>
-              {/* Кнопка Ассистенты/Скрыть список (видима только когда Prompt развернут) */}
-              {!isPromptCollapsed && (
-                <>
-                  {/* This button now controls visibility of the AssistantsList */}
-                  <button onClick={() => toggleAssistants()} style={{
-                      background: '#13233D',
-                      color: 'white',
-                      padding: '8px 15px',
-                      borderRadius: '20px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      marginBottom: '10px',
-                      transition: 'background-color 0.2s ease',
-                      // Ensure button takes full width on mobile Prompt
-                      width: isMobile ? '100%' : 'auto',
-                      textAlign: 'center'
-                  }} >{showAssistants ? 'Скрыть ассистентов' : 'Показать ассистентов'}</button>
+        {(!isMobile || !isPromptCollapsed) && (
+          <Prompt isCollapsed={isPromptCollapsed}>
+            {!isPromptCollapsed && (
+              <>
+                <button onClick={toggleAssistants} style={{
+                  background: '#13233D',
+                  color: 'white',
+                  padding: '10px 15px',
+                  borderRadius: '20px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  transition: 'background-color 0.2s ease',
+                  width: '100%',
+                  textAlign: 'center'
+                }} >{showAssistants ? 'Скрыть ассистентов' : 'Показать ассистентов'}</button>
 
-                  {/* Use the styled component for the list */}
-                  {showAssistants && (
-                    <AssistantsList>
-                      {data && data.map((e: field) => (
-                        <Asisstant
-                          key={e.id}
-                          onClick={() => {
-                            setStudyId(e.id, e.name);
-                            // Optionally keep assistants list open or close after selection
-                            // toggleAssistants(); // Uncomment to close after selection
-                          }}
-                        >
-                          {e.name}
-                        </Asisstant>
-                      ))}
-                    </AssistantsList>
-                  )}
-                </>
-              )}
-            </Prompt>
-         )}
+                {showAssistants && (
+                  <AssistantsList>
+                    {fieldsApiData && fieldsApiData.map((e: field) => (
+                      <Asisstant
+                        key={e.id}
+                        onClick={() => {
+                          setStudyId(e.id, e.name);
+                        }}
+                      >
+                        {e.name}
+                      </Asisstant>
+                    ))}
+                  </AssistantsList>
+                )}
+              </>
+            )}
+          </Prompt>
+        )}
       </DialogWindow>
     </Wrapper>
   );

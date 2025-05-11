@@ -14,7 +14,7 @@ import { state } from './redux_toolkit/store';
 import LoginApp from './components/LoginApp/LoginApp';
 import Profile from './components/Profile/Profile';
 import Settings from './components/Profile/Settings';
-import { Chat } from './redux_toolkit/reducers/ChatSlice';
+import { Message } from './redux_toolkit/reducers/ChatSlice';
 import TariffPage from './components/Pass/Pass';
 
 const AppContainer = styled.div`
@@ -74,7 +74,7 @@ export const LoadingOverlay = styled.div`
 `;
 
 const Main = () => {
-   const message_data:Array<Chat> = useSelector((state:state) => state.chat.messages_data)
+   const message_data:Array<Message> = useSelector((state:state) => state.chat.messages_data)
 
   return (
     <div style={{ height: "100vh" }}>
@@ -89,7 +89,7 @@ const Main = () => {
 };
 
 const App: React.FC = () => {
-  const [getAuth, { isLoading }] = useRefreshTokenMutation();
+  const [getAuth, { isLoading:load }] = useRefreshTokenMutation();
   const { setAuth } = useActions();
   useEffect(() => {
     const isAuth = async () => {
@@ -109,6 +109,7 @@ const App: React.FC = () => {
     isAuth()
   }, []);
   const auth = useSelector((state: state) => state.app.auth)
+  const isLoading = false
   return (
     <AppContainer>
       {isLoading ? (

@@ -82,6 +82,9 @@ interface AuthResponse {
     access: string;
     refresh?: string; // refresh токен может приходить при логине
 }
+interface DeleteInterface{
+    current_password:[string]
+}
 export interface PassInterface {
         id:number;
         name:string;
@@ -204,7 +207,13 @@ export const authApi = createApi({
                 }
            },
         }),
-
+        deleteAccount:builder.mutation({
+            query:(password:DeleteInterface) => ({
+                url:"auth/users/me/",
+                method:"DELETE",
+                body:password
+            })
+        }),
         logOut: builder.mutation<void, void>({
             query: () => ({
                 url: "auth/token/token/logout", // Отсутствует конечный слэш
@@ -237,15 +246,7 @@ export const {
     useRefreshTokenMutation,
     useLogOutMutation,
     useGetJWTMutation,
+    useDeleteAccountMutation,
 } = authApi;
 
-// Imports, которые были ошибочно в конце файла в предыдущем коде:
-/*
-import {
-    BaseQueryFn,
-    FetchArgs,
-    FetchBaseQueryError,
-    createApi,
-} from '@reduxjs/toolkit/query/react';
-import Cookies from 'js-cookie';
-*/
+

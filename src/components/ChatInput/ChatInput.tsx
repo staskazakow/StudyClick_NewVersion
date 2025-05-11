@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import screpka from "../../image/screpka.png";
 import helper from "../../image/helper.png";
 import { useActions } from '../../common/useActions';
-import { Chat } from '../../redux_toolkit/reducers/ChatSlice';
+import { Message as MessageInterface } from '../../redux_toolkit/reducers/ChatSlice';
 import { useSelector } from 'react-redux';
 import { state } from '../../redux_toolkit/store';
 import Message from '../Message/Message';
@@ -91,12 +91,13 @@ const BtnWrapper = styled.div`
 
 const MessageWrapper = styled.div`
     width: 100%; /* Take full width */
-    max-width: 670px; /* Limit max width */
+    max-width: 70vw; /* Limit max width */
     word-break: break-all;
     height: 800px;
     overflow: auto;
     margin-bottom: 5px;
     box-sizing: border-box; /* Include padding in width/height */
+
 `;
 
 // Define the interface for HelperDropdown props
@@ -144,11 +145,11 @@ const HelperButton = styled(Button)`
 `;
 
 const ChatInput: React.FC = () => {
-    const message_data: Array<Chat> = useSelector((state: state) => state.chat.messages_data);
+    const message_data: Array<MessageInterface> = useSelector((state: state) => state.chat.messages_data);
     const [input, setInput] = useState('');
     const { SetFieldName } = useActions()
     const [hasFocus, setHasFocus] = useState(false);
-    const [fileName, setFileName] = useState<string | null>(null);
+    const [file, setFileName] = useState<null | File>(null);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { AddMessage } = useActions();
     const [isHelperOpen, setIsHelperOpen] = useState(false); // State for the helper dropdown
@@ -160,7 +161,7 @@ const ChatInput: React.FC = () => {
     };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            setFileName(e.target.files[0].name);
+            setFileName(e.target.files[0]);
         }
     };
 
@@ -177,7 +178,12 @@ const ChatInput: React.FC = () => {
 
     const sendMessage = () => {
         if (input.trim() !== "") {
-            AddMessage({ describe: input, role: "user" });
+            if (file) {
+                const formData = new FormData()
+                formData.append("file",file)
+            }
+            AddMessage({ message: input, role: "user" });
+            AddMessage({ message: input, role: "bot" });
             setInput("");
         }
     };
@@ -198,12 +204,17 @@ const ChatInput: React.FC = () => {
         localStorage.setItem("study_field_name", name)
         setHelperButtonText(name)
     }
-
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+          if (messagesEndRef.current) {
+              messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+          }
+      }, [message_data,messagesEndRef]); // Зависимости: массив сообщений и сам ref
     return (
         <PageContainer>
-            <MessageWrapper>
+            <MessageWrapper ref={messagesEndRef}>
                 {message_data.map((e) => (
-                    <Message role={e.role} message={e.describe} />
+                    <Message role={e.role} message={e.message} />
                 ))}
             </MessageWrapper>
             <InputContainer>
@@ -224,14 +235,15 @@ const ChatInput: React.FC = () => {
                         type="file"
                         id="file-input"
                         onChange={handleFileChange}
+                        accept='image/*'
                     />
                     <BtnWrapper>
                         <Button type="button" onClick={handleAttachClick}>
                             <img src={screpka} alt="Attach" />Прикрепить
                         </Button>
-                        {fileName && (
-                            <span style={{ marginLeft: '2px', color: "black", display: "flex", alignItems: "center" }}>
-                                {fileName}
+                        {file && (
+                            <span style={{ marginLeft: '2px', color: "black", display: "flex", alignItems: "center" ,fontSize:"12px"}}>
+                                {file.name.length < 25 ? file.name : file.name.slice(0,25) + "..."}
                             </span>
                         )}
                         <HelperButton onClick={toggleHelper}>
