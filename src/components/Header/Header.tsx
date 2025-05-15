@@ -107,7 +107,6 @@ const Header: React.FC = () => {
     Cookies.remove("refresh")
     localStorage.removeItem('accessToken')
   }
-  console.log(auth)
 
   return (
     <HeaderContainer>

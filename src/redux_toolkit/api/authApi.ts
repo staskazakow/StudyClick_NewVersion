@@ -27,8 +27,8 @@ const baseQuery = fetchBaseQuery({
 // при попытке рефреша, если запрос на рефреш сам получит 401.
 const baseQueryWithReauth: BaseQueryFn<
     string | FetchArgs,
-    unknown,
-    FetchBaseQueryError
+    unknown
+    
 > = async (args, api, extraOptions) => {
     let result = await baseQuery(args, api, extraOptions);
 
@@ -83,7 +83,7 @@ interface AuthResponse {
     refresh?: string; // refresh токен может приходить при логине
 }
 interface DeleteInterface{
-    current_password:[string]
+    current_password:string
 }
 export interface PassInterface {
         id:number;

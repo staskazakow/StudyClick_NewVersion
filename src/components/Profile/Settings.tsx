@@ -515,15 +515,12 @@ const Settings: React.FC = () => {
     }
     setDeleteError('');
     try {
-      const result = await deleteAccountMutation({current_password:[passwordInput]});
+      const result = await deleteAccountMutation({current_password:passwordInput});
       if (result.error) {
         setDeleteError( 'Ошибка при удалении аккаунта.');
       } else {
-        console.log('Account deleted successfully:', result.data?.message);
         handleCloseModal();
-        // TODO: Add post-deletion logic (e.g., redirect, show global success message)
-        // For now, just closes modal.
-        alert(result.data?.message || 'Аккаунт удален.');
+       window.location.href = "/"
         setActiveTab('account'); // Or redirect to home/login
       }
     } catch (error) {

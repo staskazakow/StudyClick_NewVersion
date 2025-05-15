@@ -7,7 +7,7 @@ import { Message as MessageInterface } from '../../redux_toolkit/reducers/ChatSl
 import { useSelector } from 'react-redux';
 import { state } from '../../redux_toolkit/store';
 import Message from '../Message/Message';
-import { useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
+import { useCreateMessageNoLoginMutation, useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
 
 const PageContainer = styled.div`
     display: flex;
@@ -54,7 +54,7 @@ export const TextArea = styled.textarea<{ hasFocus: boolean }>`
     }
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
     background-color: #C3BFBF;
     color: #000000;
     border: none;
@@ -66,7 +66,7 @@ const Button = styled.button`
     display: flex;
     align-items: center;
     gap: 3px;
-
+    
     &:hover {
         transform: scale(1.05);
     }
@@ -77,7 +77,7 @@ const Button = styled.button`
     }
 `;
 
-const FileInput = styled.input`
+export const FileInput = styled.input`
     display: none;
 `;
 
@@ -149,19 +149,19 @@ const ChatInput: React.FC = () => {
     const [input, setInput] = useState('');
     const { SetFieldName } = useActions()
     const [hasFocus, setHasFocus] = useState(false);
-    const [file, setFileName] = useState<null | File>(null);
+    const [file, setFile] = useState<null | File>(null);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { AddMessage } = useActions();
     const [isHelperOpen, setIsHelperOpen] = useState(false); // State for the helper dropdown
     const { data } = useGetFieldsQuery()
     const [helperButtonText, setHelperButtonText] = useState("Помощник");
-
+    const [createMessage, { }] = useCreateMessageNoLoginMutation()
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);
     };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            setFileName(e.target.files[0]);
+            setFile(e.target.files[0]);
         }
     };
 
@@ -176,24 +176,34 @@ const ChatInput: React.FC = () => {
         }
     }, [input]);
 
-    const sendMessage = () => {
-        if (input.trim() !== "") {
+    const sendMessage = async () => {
+        if (input.trim() !== "" || file) {
+            const formData = new FormData()
             if (file) {
-                const formData = new FormData()
-                formData.append("file",file)
+                formData.append("file", file)
             }
+            formData.append("message", input)
+            formData.append("study_field_id", localStorage.getItem("study_field_id") ? localStorage.getItem("study_field_id") as string : "15")
+            formData.append("chat_id", "0")
             AddMessage({ message: input, role: "user" });
-            AddMessage({ message: input, role: "bot" });
+            let res = await createMessage(formData)
+            if (res.error) {
+                AddMessage({ message: "Ошибка", role: "bot" });
+
+            }
+            if (res.data) {
+                AddMessage({ message: res.data.response, role: "bot" });
+            }
             setInput("");
         }
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-       if (event.key === "Enter" && !event.shiftKey) {  // shift+Enter для новой строки
-         event.preventDefault();
-         sendMessage();
-       }
-     };
+        if (event.key === "Enter" && !event.shiftKey) {  // shift+Enter для новой строки
+            event.preventDefault();
+            sendMessage();
+        }
+    };
 
     const toggleHelper = () => {
         setIsHelperOpen(!isHelperOpen);
@@ -206,10 +216,10 @@ const ChatInput: React.FC = () => {
     }
     const messagesEndRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
-          if (messagesEndRef.current) {
-              messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-          }
-      }, [message_data,messagesEndRef]); // Зависимости: массив сообщений и сам ref
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+        }
+    }, [message_data, messagesEndRef]); // Зависимости: массив сообщений и сам ref
     return (
         <PageContainer>
             <MessageWrapper ref={messagesEndRef}>
@@ -235,15 +245,15 @@ const ChatInput: React.FC = () => {
                         type="file"
                         id="file-input"
                         onChange={handleFileChange}
-                        accept='image/*'
+                        accept='.pdf,.docx'
                     />
                     <BtnWrapper>
                         <Button type="button" onClick={handleAttachClick}>
                             <img src={screpka} alt="Attach" />Прикрепить
                         </Button>
                         {file && (
-                            <span style={{ marginLeft: '2px', color: "black", display: "flex", alignItems: "center" ,fontSize:"12px"}}>
-                                {file.name.length < 25 ? file.name : file.name.slice(0,25) + "..."}
+                            <span style={{ marginLeft: '2px', color: "black", display: "flex", alignItems: "center", fontSize: "12px" }}>
+                                {file.name.length < 25 ? file.name : file.name.slice(0, 25) + "..."}
                             </span>
                         )}
                         <HelperButton onClick={toggleHelper}>

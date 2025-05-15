@@ -89,7 +89,7 @@ const Main = () => {
 };
 
 const App: React.FC = () => {
-  const [getAuth, { isLoading:load }] = useRefreshTokenMutation();
+  const [getAuth, { isLoading }] = useRefreshTokenMutation();
   const { setAuth } = useActions();
   useEffect(() => {
     const isAuth = async () => {
@@ -109,7 +109,6 @@ const App: React.FC = () => {
     isAuth()
   }, []);
   const auth = useSelector((state: state) => state.app.auth)
-  const isLoading = false
   return (
     <AppContainer>
       {isLoading ? (
