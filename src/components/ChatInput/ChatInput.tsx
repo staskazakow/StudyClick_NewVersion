@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { state } from '../../redux_toolkit/store';
 import Message from '../Message/Message';
 import { useCreateMessageNoLoginMutation, useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
+import { LoadingDots, MessagesItem } from '../LoginApp/LoginApp';
 
 const PageContainer = styled.div`
     display: flex;
@@ -72,8 +73,12 @@ export const Button = styled.button`
     }
 
     @media (max-width: 600px) {
-        padding: 8px 12px;
-        font-size: 14px;
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    & > img{
+    width:15px;
+
     }
 `;
 
@@ -82,6 +87,7 @@ export const FileInput = styled.input`
 `;
 
 const BtnWrapper = styled.div`
+    margin-top:3px;
     display: flex;
     gap: 11px;
     position: relative; /* Add relative positioning */
@@ -155,7 +161,7 @@ const ChatInput: React.FC = () => {
     const [isHelperOpen, setIsHelperOpen] = useState(false); // State for the helper dropdown
     const { data } = useGetFieldsQuery()
     const [helperButtonText, setHelperButtonText] = useState("Помощник");
-    const [createMessage, { }] = useCreateMessageNoLoginMutation()
+    const [createMessage, { isLoading:SendFetching}] = useCreateMessageNoLoginMutation()
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);
     };
@@ -226,6 +232,11 @@ const ChatInput: React.FC = () => {
                 {message_data.map((e) => (
                     <Message role={e.role} message={e.message} />
                 ))}
+                 {SendFetching && (
+                                    <MessagesItem >
+                                      <LoadingDots />
+                                    </MessagesItem>
+                                  )}
             </MessageWrapper>
             <InputContainer>
                 <TextArea
@@ -240,7 +251,7 @@ const ChatInput: React.FC = () => {
                     rows={1}
                 />
 
-                <div>
+                <div >
                     <FileInput
                         type="file"
                         id="file-input"

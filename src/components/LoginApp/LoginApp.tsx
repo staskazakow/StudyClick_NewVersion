@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'; // Добавлен useRef
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import user from "../../image/User.png";
 import { ButtonChat } from '../Header/Header';
 import ChatBtn from "../../image/message.png";
@@ -51,7 +51,7 @@ export const Wrapper = styled.div`
 `;
 
 const ChatWindow = styled.div<StyledProps>`
-  width: ${({ isOpen }) => isOpen ? 'clamp(250px, 20vw, 350px)' : '0'};
+  width: ${({ isOpen }) => isOpen ? 'clamp(170px, 20vw, 350px)' : '0'};
   display: flex;
   flex-direction: column;
   background-color: #ECECE5;
@@ -203,7 +203,7 @@ const Prompt = styled.div<StyledProps>`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: ${({ isCollapsed }) => (isCollapsed ? '0' : 'clamp(220px, 18vw, 300px)')};
+  width: ${({ isCollapsed }) => (isCollapsed ? '0' : 'clamp(160px, 18vw, 300px)')};
   padding: ${({ isCollapsed }) => (isCollapsed ? '20px 0' : '20px')};
   border-left: ${({ isCollapsed }) => (isCollapsed ? 'none' : '1px solid black')};
   transition: all 0.3s ease;
@@ -258,12 +258,14 @@ const InputBlock = styled.input`
   border-radius: 30px;
   border: none;
   padding: 10px 20px;
-  margin-top: 10px;
   width: 100%;
   box-sizing: border-box;
   &:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+  }
+    @media (max-width: ${breakpoints.mobile}) {
+    width: 90%;
   }
 `;
 
@@ -375,7 +377,7 @@ const Asisstant = styled.li`
   }
 `;
 
-const MessagesItem = styled.div`
+export const MessagesItem = styled.div`
   padding: 8px 12px;
   border-radius: 15px;
   margin-bottom: 10px;
@@ -399,24 +401,62 @@ const MessagesItem = styled.div`
   }
 `;
 type ErrorRes = { data: any; error?: undefined; } | { data?: undefined; error: any; }
-
+const LoadingDotsContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const loadingDotsAnimation = keyframes`
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.0);
+    opacity: 1;
+  }
+`;
+const Dot = styled.span`
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 2px;
+  background-color: currentColor; // Будет использовать цвет текста MessagesItem.assistant (черный)
+  border-radius: 50%;
+  animation: \${loadingDotsAnimation} 1.4s infinite ease-in-out both;
+  &:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+  &:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+  &:nth-child(3) {
+    animation-delay: 0s;
+  }
+`;
 interface LoginAppProps { }
-
+export const LoadingDots: React.FC = () => (
+  <LoadingDotsContainer>
+    <Dot />
+    <Dot />
+    <Dot />
+  </LoadingDotsContainer>
+);
 const LoginApp: React.FC<LoginAppProps> = () => {
   const [message, setMessage] = useState<string>("");
   const [showAssistants, setShowAssistants] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const { AddMessage, PushMessage, SetChats, SetCurrentChat: SetCurrentChatMessages, AddChatLogin } = useActions();
-  const [tokenLimit,setTokenLimit] = useState(false)
+  const [tokenLimit, setTokenLimit] = useState(false)
   const { data: fieldsApiData } = useGetFieldsQuery();
   const [isPromptCollapsed, setIsPromptCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [createMessage, {isLoading:SendFetching }] = useCreateMessageMutation()
+  const [createMessage, { isLoading: SendFetching }] = useCreateMessageMutation()
   const { data: chats, isLoading } = useGetChatsQuery(0)
   const chatsFromStore = useSelector((state: state) => state.chat.chat_data)
+  const current_chat = useSelector((state: state) => state.chat.current_chat)
   // Ref для контейнера сообщений для автопрокрутки
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [fieldName,setFieldName] = useState("")
+  const [fieldName, setFieldName] = useState("")
   const [file, setFile] = useState<null | File>()
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -457,16 +497,17 @@ const LoginApp: React.FC<LoginAppProps> = () => {
         const chatId = localStorage.getItem("chat_id");
         const formData = new FormData()
         if (file) {
-            formData.append("file",file)
+          formData.append("file", file)
         }
-        formData.append("message",message)
-        formData.append("study_field_id",studyFieldId ? studyFieldId : '0')
+        formData.append("message", message)
+        formData.append("study_field_id", studyFieldId ? studyFieldId : '0')
         formData.append("chat_id", chatId ? chatId : '0')
-        const res:ErrorRes = await createMessage(
+        const res: ErrorRes = await createMessage(
           formData
         );
-        
+
         setMessage("");
+        setFile(null)
         if (res.error) {
           setTokenLimit(true)
           const errorMessage = res.error.data.error || "An error occurred."; // Safely access the error message
@@ -474,6 +515,11 @@ const LoginApp: React.FC<LoginAppProps> = () => {
         }
         if (res.data && res.data.response) {
           PushMessage({ message: res.data.response, role: "bot" });
+          if (localStorage.getItem("chat_id") == "0") {
+            let id = res.data.chat_id
+
+            localStorage.setItem("chat_id", id as string)
+          }
         } else {
           console.error("Response from createMessage is not as expected:", res);
         }
@@ -507,8 +553,8 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   const setStudyId = (id: number, name: string): void => {
     localStorage.setItem("study_field_id", id.toString());
     localStorage.setItem("study_field_name", name);
-     setShowAssistants(false);
-     setFieldName(name)
+    setShowAssistants(false);
+    setFieldName(name)
   };
 
   const [currentChatObj, setCurrentChatObj] = useState<Chat | null>(null);
@@ -519,38 +565,41 @@ const LoginApp: React.FC<LoginAppProps> = () => {
 
     if (chats) {
       const selectedChat = chatsFromStore.find((chat: Chat) => chat.id === numericId);
+
       if (selectedChat) {
         setCurrentChatObj(selectedChat);
         SetCurrentChatMessages(selectedChat.messages || []);
         SetField()
-      
+
       } else {
         setCurrentChatObj(null);
         SetCurrentChatMessages([]);
       }
     }
   };
+
+  // debugger
   const SetField = () => {
     if (currentChatObj && currentChatObj.study_field && fieldsApiData) {
-        const field = fieldsApiData?.find((field: field) => field.id === currentChatObj.study_field)
-        localStorage.setItem("study_field_id", currentChatObj.study_field.toString());
-        localStorage.setItem("study_field_name",field.name );
-        setFieldName(field.name)
-      }
+      const field = fieldsApiData?.find((field: field) => field.id === currentChatObj.study_field)
+      localStorage.setItem("study_field_id", currentChatObj.study_field.toString());
+      localStorage.setItem("study_field_name", field.name);
+      setFieldName(field.name)
+    }
   }
-   const handleAttachClick = () => {
-        file ? setFile(null) :
-        document.getElementById('file-input')?.click();
-    };
+  const handleAttachClick = () => {
+    file ? setFile(null) :
+      document.getElementById('file-input')?.click();
+  };
   useEffect(() => {
     const storedChatId = localStorage.getItem("chat_id");
-     
+
     if (storedChatId && chats && chats.length > 0) {
       HandleChat(storedChatId);
-     SetField()
-      
+      SetField()
+
     }
-  }, [chatsFromStore,currentChatObj]);
+  }, [chatsFromStore, currentChatObj]);
   return (
     <Wrapper>
       {isLoading ?
@@ -629,35 +678,38 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                       {currentChatObj ? "Сообщений не найдено" : "Выберите чат для начала общения"}
                     </div>
                   )}
+                  {SendFetching && (
+                    <MessagesItem className="assistant">
+                      <LoadingDots />
+                    </MessagesItem>
+                  )}
                 </Messages>
-                <div >
+                <div style={{ marginTop: "3px" }} >
                   <InputBlock
                     value={message}
-                    aria-disabled={SendFetching}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
                     onKeyDown={handleKeyPress}
                     placeholder={currentChatObj ? "Чем помочь?" : "Выберите чат"}
-                    disabled={!currentChatObj}
-                  /> 
+                    disabled={SendFetching}
+                  />
                   {
                     currentChatObj ? <>
-                  <FileInput
-                    type="file"
-                    id="file-input"
-                    onChange={handleFileChange}
-                    accept='.pdf,.docx'
-                  />
-                  <div style={{display:"flex",alignItems:"center",gap:"3px"}}>
-
-                  <Button style = {{marginLeft:"10px",marginTop:"5px"}}type="button" onClick={handleAttachClick}>
-                            <img src={screpka} alt="Attach" />{file ? "Открепить" : "Закрепить"}
+                      <FileInput
+                        type="file"
+                        id="file-input"
+                        onChange={handleFileChange}
+                        accept='.pdf,.docx'
+                      />
+                      <div style={{ display: "flex", alignItems: "center", gap: "3px", marginTop: "5px" }}>
+                        <Button type="button" onClick={handleAttachClick}>
+                          <img src={screpka} alt="Attach" />{file ? "Открепить" : "Закрепить"}
                         </Button>
                         <Button onClick={() => sendMessage()}>Отправить</Button>
-                      {file && <div>{file.name.length < 25 ? file.name : file.name.slice(0,25) + "..."}</div>}
-                  </div>
+                        {file && <div>{file.name.length < 25 ? file.name : file.name.slice(0, 25) + "..."}</div>}
+                      </div>
                     </>
-                    :
-                    <> </>
+                      :
+                      <> </>
                   }
                 </div>
               </MessageBlock>
@@ -676,7 +728,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                       cursor: 'pointer',
                       fontSize: '14px',
                       transition: 'background-color 0.2s ease',
-                      width: '100%',
+                      width: '90%',
                       textAlign: 'center'
                     }} >{showAssistants ? 'Скрыть ассистентов' : 'Показать ассистентов'}</button>
 

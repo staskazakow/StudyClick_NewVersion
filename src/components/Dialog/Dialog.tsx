@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Chat } from '../../redux_toolkit/reducers/ChatSlice'; // Assuming Chat type is available
 import { useChangeNameChatMutation, useDeleteChatMutation } from '../../redux_toolkit/api/chatsApi';
 import { useActions } from '../../common/useActions';
-
 // Define the props interface for DialogItem
 interface DialogItemProps {
   element: Chat;
@@ -126,10 +125,11 @@ const DialogItem: React.FC<DialogItemProps> = ({ element, handle, onSaveChatName
   const [isRenaming, setIsRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState(element.title);
 const [ChangeName,{isLoading}] = useChangeNameChatMutation()
+// const currentMessages = useSelector((state:state) => state.chat.current_chat)
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null); // Ref for the rename input
-    const [deleteChat,{isLoading:deleteLoading}] = useDeleteChatMutation()
+    const [deleteChat] = useDeleteChatMutation()
     const {DeleteChat,RenameChat} = useActions()
   // Effect to focus input when renaming starts
   useEffect(() => {
@@ -146,7 +146,7 @@ const [ChangeName,{isLoading}] = useChangeNameChatMutation()
     }
   }, [element.title, isRenaming]);
 
-
+  // 
   const handleToggleMenu = (event: React.MouseEvent) => {
     event.stopPropagation(); 
     setIsMenuOpen(prev => !prev);
@@ -160,16 +160,17 @@ const [ChangeName,{isLoading}] = useChangeNameChatMutation()
     // Focus will be handled by the useEffect
   };
 
+
   const submitRename = async() => {
     const trimmedValue = renameValue.trim();
     if (trimmedValue && trimmedValue !== element.title) {
         try {
             RenameChat({
-                id:element.id,
+              id:element.id,
               title:trimmedValue
             })
             await ChangeName({
-              id:element.id,
+              id:element.id !== 0 ? element.id : localStorage.getItem("chat_id"),
               title:trimmedValue
             })
         } catch (error) {

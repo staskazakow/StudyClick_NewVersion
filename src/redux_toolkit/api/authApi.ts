@@ -1,7 +1,6 @@
 import {
     BaseQueryFn,
     FetchArgs,
-    FetchBaseQueryError,
     createApi,
     fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react'; // fetchBaseQuery может быть неявно доступен
@@ -11,7 +10,7 @@ import Cookies from 'js-cookie';
 // Базовый URL вашего API
 const baseUrl = 'https://vfmlbq9k-8000.uks1.devtunnels.ms/api/';
 
-const baseQuery = fetchBaseQuery({
+export const baseQuery = fetchBaseQuery({
     baseUrl: baseUrl,
     prepareHeaders: (headers) => {
         const token = localStorage.getItem('accessToken');
@@ -25,7 +24,7 @@ const baseQuery = fetchBaseQuery({
 
 // Эта версия baseQueryWithReauth содержит логику, которая может привести к зацикливанию
 // при попытке рефреша, если запрос на рефреш сам получит 401.
-const baseQueryWithReauth: BaseQueryFn<
+export const baseQueryWithReauth: BaseQueryFn<
     string | FetchArgs,
     unknown
     

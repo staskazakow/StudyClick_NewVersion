@@ -1,5 +1,4 @@
-import React, { JSX, ReactElement } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import styled from 'styled-components';
 
 const MainContainer = styled.div`

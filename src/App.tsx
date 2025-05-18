@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Header from './components/Header/Header';
 import MainContent from './components/MainContent/MainContent';
 import ChatInput from './components/ChatInput/ChatInput';
 import styled, { keyframes } from 'styled-components';
-import { href, Route, Routes } from 'react-router';
+import { Route, Routes } from 'react-router';
 import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import { useRefreshTokenMutation } from './redux_toolkit/api/authApi';
@@ -81,7 +81,7 @@ const Main = () => {
       
         <MainWrapper>
           <Header />
-          {message_data.length == 0 && <MainContent />}
+          {message_data.length === 0 && <MainContent />}
           <ChatInput />
         </MainWrapper>
     </div>
@@ -107,7 +107,7 @@ const App: React.FC = () => {
       }
     };
     isAuth()
-  }, []);
+  }, );
   const auth = useSelector((state: state) => state.app.auth)
   return (
     <AppContainer>

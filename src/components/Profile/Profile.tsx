@@ -1,29 +1,13 @@
-import React, { useEffect, useState } from 'react';
-
-// Assuming Wrapper from LoginApp/LoginApp is a simple centering container
-// If it has fixed width, we might need to override or adjust it.
-// Based on the previous uses, it seems to be a full-viewport container.
+import React from 'react';
 import { Wrapper as BaseWrapper } from '../LoginApp/LoginApp';
-
 import user from "../../image/User.png";
-
 import styled from 'styled-components';
-
-import { NavLink } from 'react-router'; // Correct import for NavLink <sup data-citation="3" className="inline select-none [&>a]:rounded-2xl [&>a]:border [&>a]:px-1.5 [&>a]:py-0.5 [&>a]:transition-colors shadow [&>a]:bg-ds-bg-subtle [&>a]:text-xs [&>svg]:w-4 [&>svg]:h-4 relative -top-[2px] citation-shimmer"><a href="#" title="Reference 3 (source not available)">3</a></sup>
-
+import { NavLink } from 'react-router';
 import close from "../../image/close.png"
-
-// Assuming CloseBtn is styled for an image button
 import { CloseBtn as BaseCloseBtn } from './Settings';
-
 import { useGetUserQuery, useLogOutMutation } from '../../redux_toolkit/api/authApi';
-
 import { useActions } from '../../common/useActions';
-
 import { LoadingOverlay, LoadingSpinner } from '../../App';
-
-import { useSelector } from 'react-redux';
-
 
 // --- Styled Components ---
 
