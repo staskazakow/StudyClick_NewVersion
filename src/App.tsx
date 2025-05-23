@@ -107,7 +107,7 @@ const App: React.FC = () => {
       }
     };
     isAuth()
-  }, );
+  }, []);
   const auth = useSelector((state: state) => state.app.auth)
   return (
     <AppContainer>
