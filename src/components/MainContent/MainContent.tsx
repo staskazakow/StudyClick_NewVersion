@@ -19,7 +19,7 @@ const MainContent: React.FC = () => {
   return (
     <MainContainer> 
       {/* <div> */}
-      <h1 style={{fontWeight:"300",fontFamily:"sans-serif"}}>Добро пожаловать в Study Click</h1>
+      <h1 style={{fontWeight:"300",fontFamily:"sans-serif"}}>Добро пожаловать в Guiding Star</h1>
       <p style={{color:"#C3BFBF",}}>Чем помочь сегодня?</p>
       {/* </div> */}
       

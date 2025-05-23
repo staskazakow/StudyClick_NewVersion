@@ -16,7 +16,7 @@ import { useCreateMessageMutation, useGetChatsQuery } from '../../redux_toolkit/
 import DialogItem from '../Dialog/Dialog';
 import { LoadingOverlay, LoadingSpinner } from '../../App';
 import screpka from "../../image/screpka.png"
-
+import logo from "../../image/LogoIn.png"
 // Определение брейкпоинтов для адаптивности
 const breakpoints = {
   mobile: '768px',
@@ -231,7 +231,10 @@ const StyledButtonChat = styled(ButtonChat)`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+   background-color:rgb(65 65 65); // Цвет кнопки при наведении
+  &:hover {
+ background-color:rgb(17, 9, 9); // Цвет кнопки при наведении
+}
   img {
     display: block;
   }
@@ -358,7 +361,14 @@ const AssistantsList = styled.ul`
      max-height: 20vh;
   }
 `;
-
+const LogoCont = styled.div`
+display:flex;
+align-items:center;
+  img{
+    width:47px;
+    height:35px;
+  }
+`
 const Asisstant = styled.li`
   color: black;
   padding: 8px 12px;
@@ -612,7 +622,10 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               <StyledButtonChat onClick={() => AddChatLogin(0)}>
                 <img src={ChatBtn} alt="Chat" />
               </StyledButtonChat>
-              <Logo>Study Click</Logo>
+              <LogoCont>
+                <img src={logo} alt='logo'/>
+                <Logo>Guiding Star</Logo>
+              </LogoCont>
               <ArrowLeft onClick={toggleSidebar}>
                 <img src={Left} alt="Toggle Sidebar" />
               </ArrowLeft>

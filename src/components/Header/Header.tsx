@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import message from "../../image/message.png"
 import { NavLink } from 'react-router';
 import { useSelector } from 'react-redux';
-import {state}  from '../../redux_toolkit/store';
+import { state } from '../../redux_toolkit/store';
 import { useActions } from '../../common/useActions';
 import { useLogOutMutation } from '../../redux_toolkit/api/authApi';
 import Cookies from 'js-cookie';
+import logo from "../../image/Logo.png"
 const HeaderContainer = styled.header`
   background: #13233D;
  // Темно-синий цвет фона
@@ -97,10 +98,10 @@ margin-bottom:10px;
 `
 
 const Header: React.FC = () => {
-  const auth = useSelector((state:state) => state.app.auth)
-  const {setAuth} = useActions()
-  const {AddChat} = useActions()
-  const [Out,{data}] = useLogOutMutation()
+  const auth = useSelector((state: state) => state.app.auth)
+  const { setAuth } = useActions()
+  const { AddChat } = useActions()
+  const [Out, { data }] = useLogOutMutation()
   const logOut = () => {
     setAuth(false)
     Out()
@@ -112,21 +113,24 @@ const Header: React.FC = () => {
     <HeaderContainer>
       <FuncBlock>
         <ButtonChat><img onClick={() => AddChat(1)} src={message} title='New Chat' alt="" /></ButtonChat>
-      <Title>Study Click</Title>
+        <div style={{display:"flex",alignItems:"center"}}>
+          <img src={logo} alt="logo" />
+          <Title>Guiding Star</Title>
+        </div>
       </FuncBlock>
       {auth ?
-      <div onClick={logOut}>Log out</div>
-      : <ButtonContainer>
-      <NavLink to={"/register"}>
-      <ButtonReg>Регистрация</ButtonReg>
+        <div onClick={logOut}>Log out</div>
+        : <ButtonContainer>
+          <NavLink to={"/register"}>
+            <ButtonReg>Регистрация</ButtonReg>
 
-      </NavLink>
-      <NavLink to={"/login"}>
+          </NavLink>
+          <NavLink to={"/login"}>
 
-      <ButtonIn>Войти</ButtonIn>
-      </NavLink>
-    </ButtonContainer> }
-     
+            <ButtonIn>Войти</ButtonIn>
+          </NavLink>
+        </ButtonContainer>}
+
     </HeaderContainer>
   );
 };
