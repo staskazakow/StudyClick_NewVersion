@@ -16,6 +16,9 @@ const MessageBubble = styled.div`
   word-wrap: break-word; // Prevent long words from overflowing
   box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13); // Subtle shadow
   display: inline-block; // Allow bubble to only take necessary width
+  @media (max-width: 767px) {
+  font-size:16px;
+  }
 `;
 
 const UserMessage = styled(MessageBubble)`

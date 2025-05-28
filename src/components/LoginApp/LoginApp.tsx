@@ -101,7 +101,7 @@ const CollapseButton = styled.button<StyledProps>`
 
 const NavBlock = styled.div`
   display: flex;
-  justify-content: space-between;
+  gap:10px;
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #eee;
@@ -298,10 +298,11 @@ const FieldsBtn = styled.div`
   cursor: pointer;
   flex-shrink: 0;
   text-align: center;
-
   @media (max-width: ${breakpoints.mobile}) {
     margin-bottom: 0;
     padding: 8px 10px;
+    width:75vw; 
+
   }
 `;
 
@@ -322,8 +323,8 @@ const Messages = styled.div`
   padding: 0 10px 0 0;
   display: flex;
   flex-direction: column;
-
   @media (max-width: ${breakpoints.mobile}) {
+    max-height:40vh;
     padding-right: 5px;
   }
 
@@ -703,7 +704,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
                     onKeyDown={handleKeyPress}
                     placeholder={currentChatObj ? "Чем помочь?" : "Выберите чат"}
-                    disabled={SendFetching}
+                    disabled={currentChatObj ? false : true}
                   />
                   {
                     currentChatObj ? <>
