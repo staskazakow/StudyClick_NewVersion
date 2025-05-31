@@ -14,7 +14,7 @@ import { NavLink } from 'react-router';
 import RightArrow from "../../image/RightArrow.svg"
 import { useCreateMessageMutation, useGetChatsQuery } from '../../redux_toolkit/api/chatsApi';
 import DialogItem from '../Dialog/Dialog';
-import { LoadingOverlay, LoadingSpinner } from '../../App';
+import { FooterINN, LoadingOverlay, LoadingSpinner } from '../../App';
 import screpka from "../../image/screpka.png"
 import logo from "../../image/LogoIn.png"
 // Определение брейкпоинтов для адаптивности
@@ -35,7 +35,7 @@ export const Wrapper = styled.div`
   height: 100vh;
   width: 100vw;
   background-color: #B2CEE2;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
   transition: all 0.3s ease;
   padding: 20px;
@@ -618,6 +618,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
           <LoadingSpinner />
         </LoadingOverlay> :
         <>
+        <div style={{display:"flex",height:"100vh"}}>
           <ChatWindow isOpen={isSidebarOpen}>
             <NavBlock>
               <StyledButtonChat onClick={() => AddChatLogin(0)}>
@@ -637,7 +638,6 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               ))}
             </Chats>
           </ChatWindow>
-
           <DialogWindow isOpen={isSidebarOpen}>
             <Dialog isCollapsed={isPromptCollapsed}>
               <HeaderBlock>
@@ -765,6 +765,12 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               </Prompt>
             )}
           </DialogWindow>
+
+        </div>
+
+          <FooterINN style={{color:"black"}}>
+            Артеев Максим Николаевич ИНН - 110406474346
+          </FooterINN>
         </>
       }
 
