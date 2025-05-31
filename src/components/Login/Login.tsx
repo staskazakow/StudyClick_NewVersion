@@ -167,7 +167,7 @@ const Login = () => {
                         type="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email или имя пользователя" // Updated placeholder
+                        placeholder="Введите имя пользователя" // Updated placeholder
                     />
                     <LoginInput 
                         type="password"
