@@ -14,12 +14,12 @@ import { NavLink } from 'react-router';
 import RightArrow from "../../image/RightArrow.svg"
 import { useCreateMessageMutation, useGetChatsQuery } from '../../redux_toolkit/api/chatsApi';
 import DialogItem from '../Dialog/Dialog';
-import { LoadingOverlay, LoadingSpinner } from '../../App';
+import { FooterINN, LoadingOverlay, LoadingSpinner } from '../../App';
 import screpka from "../../image/screpka.png"
 import logo from "../../image/LogoIn.png"
 // Определение брейкпоинтов для адаптивности
 const breakpoints = {
-  mobile: '768px',
+  mobile: '1000px',
   tablet: '1024px',
 };
 
@@ -35,7 +35,7 @@ export const Wrapper = styled.div`
   height: 100vh;
   width: 100vw;
   background-color: #B2CEE2;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
   transition: all 0.3s ease;
   padding: 20px;
@@ -51,7 +51,7 @@ export const Wrapper = styled.div`
 `;
 
 const ChatWindow = styled.div<StyledProps>`
-  width: ${({ isOpen }) => isOpen ? 'clamp(170px, 20vw, 350px)' : '0'};
+  width: 100%;
   display: flex;
   flex-direction: column;
   background-color: #ECECE5;
@@ -61,15 +61,17 @@ const ChatWindow = styled.div<StyledProps>`
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
+  width: ${({ isOpen }) => isOpen ? "min-content" : "0"};
+  height: ${({ isOpen }) => isOpen ? "95vh" : "0"};
 
-  @media (max-width: ${breakpoints.mobile}) {
-    width: 100%;
+  @media (max-width: 1000px) {
     min-width: 0;
     max-width: none;
-    height: ${({ isOpen }) => isOpen ? '25vh' : '0'};
     margin-right: 0;
     border-radius: 10px;
     flex-shrink: ${({ isOpen }) => isOpen ? 0 : 1};
+    width: ${({ isOpen }) => isOpen ? "100%" : "0"};
+    height: ${({ isOpen }) => isOpen ? "22vh" : "0"};
   }
 `;
 
@@ -101,7 +103,7 @@ const CollapseButton = styled.button<StyledProps>`
 
 const NavBlock = styled.div`
   display: flex;
-  justify-content: space-between;
+  gap:10px;
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #eee;
@@ -167,9 +169,7 @@ const DialogWindow = styled.div<StyledProps>`
   position: relative;
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-
-  @media (max-width: ${breakpoints.mobile}) {
+  @media (max-width:1000px) {
     flex-direction: column;
     height: auto;
     flex-grow: 1;
@@ -185,10 +185,9 @@ const Dialog = styled.div<StyledProps>`
   flex-grow: 1;
   overflow-y: auto;
   position: relative;
-  width: ${({ isCollapsed }: StyledProps) => (isCollapsed ? '100%' : 'auto')};
   border-right: ${({ isCollapsed }: StyledProps) => (isCollapsed ? 'none' : '1px solid black')};
 
-  @media (max-width: ${breakpoints.mobile}) {
+  @media (max-width: 1000px) {
     border-right: none;
     border-bottom: ${({ isCollapsed }: StyledProps) => (isCollapsed ? 'none' : '1px solid black')};
     padding: 15px;
@@ -210,7 +209,7 @@ const Prompt = styled.div<StyledProps>`
   overflow: hidden;
   flex-shrink: 0;
 
-  @media (max-width: ${breakpoints.mobile}) {
+  @media (max-width: 1000px) {
     width: 100%;
     min-width: 0;
     max-width: none;
@@ -278,7 +277,7 @@ const HeaderBlock = styled.div`
   align-items: center;
   margin-bottom: 20px;
 
-  @media (max-width: ${breakpoints.mobile}) {
+  @media (max-width: 1000px) {
     flex-direction: column;
     align-items: stretch;
     margin-bottom: 15px;
@@ -298,10 +297,11 @@ const FieldsBtn = styled.div`
   cursor: pointer;
   flex-shrink: 0;
   text-align: center;
-
   @media (max-width: ${breakpoints.mobile}) {
     margin-bottom: 0;
     padding: 8px 10px;
+    width:75vw; 
+
   }
 `;
 
@@ -322,7 +322,6 @@ const Messages = styled.div`
   padding: 0 10px 0 0;
   display: flex;
   flex-direction: column;
-
   @media (max-width: ${breakpoints.mobile}) {
     padding-right: 5px;
   }
@@ -356,9 +355,10 @@ const AssistantsList = styled.ul`
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   overflow-y: auto;
   max-height: 50vh;
-
+  width:15vw;
   @media (max-width: ${breakpoints.mobile}) {
      max-height: 20vh;
+     width:90%;
   }
 `;
 const LogoCont = styled.div`
@@ -393,10 +393,9 @@ export const MessagesItem = styled.div`
   margin-bottom: 10px;
   word-break: break-word;
   max-width: 80%;
-  width: max-content;
   color: black;
   line-height: 1.4;
-
+  margin-right:4px;
   /* Default for user messages */
   background-color: #D9D9D9;
   align-self: flex-end;
@@ -408,6 +407,7 @@ export const MessagesItem = styled.div`
 
   @media (max-width: ${breakpoints.mobile}) {
     max-width: 85%;
+    margin-right:10px;
   }
 `;
 type ErrorRes = { data: any; error?: undefined; } | { data?: undefined; error: any; }
@@ -443,6 +443,13 @@ const Dot = styled.span`
     animation-delay: 0s;
   }
 `;
+const MessageWrapper = styled.div`
+display:flex;
+flex-direction:row;
+@media(max-width:1000px){
+  flex-direction:column;
+}
+`
 interface LoginAppProps { }
 export const LoadingDots: React.FC = () => (
   <LoadingDotsContainer>
@@ -617,6 +624,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
           <LoadingSpinner />
         </LoadingOverlay> :
         <>
+        <MessageWrapper style={{height:"100vh",gap:"4px"}}>
           <ChatWindow isOpen={isSidebarOpen}>
             <NavBlock>
               <StyledButtonChat onClick={() => AddChatLogin(0)}>
@@ -636,7 +644,6 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               ))}
             </Chats>
           </ChatWindow>
-
           <DialogWindow isOpen={isSidebarOpen}>
             <Dialog isCollapsed={isPromptCollapsed}>
               <HeaderBlock>
@@ -703,7 +710,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
                     onKeyDown={handleKeyPress}
                     placeholder={currentChatObj ? "Чем помочь?" : "Выберите чат"}
-                    disabled={SendFetching}
+                    disabled={currentChatObj ? false : true}
                   />
                   {
                     currentChatObj ? <>
@@ -764,6 +771,12 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               </Prompt>
             )}
           </DialogWindow>
+
+        </MessageWrapper>
+
+          <FooterINN style={{color:"black"}}>
+            Артеев Максим Николаевич ИНН - 110406474346
+          </FooterINN>
         </>
       }
 

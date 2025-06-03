@@ -72,7 +72,12 @@ export const LoadingOverlay = styled.div`
   align-items: center;
   z-index: 1000; /* Ensure it's on top of everything */
 `;
-
+export const FooterINN = styled.div`
+display:flex;
+justify-content:center;
+color:#c8ccd1;
+font-size:14px;
+`
 const Main = () => {
    const message_data:Array<Message> = useSelector((state:state) => state.chat.messages_data)
 
@@ -83,6 +88,10 @@ const Main = () => {
           <Header />
           {message_data.length === 0 && <MainContent />}
           <ChatInput />
+          <FooterINN>
+            Артеев Максим Николаевич 
+             ИНН - 
+           110406474346</FooterINN>
         </MainWrapper>
     </div>
   );

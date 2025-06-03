@@ -8,7 +8,7 @@ import {
 import Cookies from 'js-cookie';
 
 // Базовый URL вашего API
-const baseUrl = 'https://vfmlbq9k-8000.uks1.devtunnels.ms/api/';
+const baseUrl = 'http://87.228.83.230:8000/api/';
 
 export const baseQuery = fetchBaseQuery({
     baseUrl: baseUrl,

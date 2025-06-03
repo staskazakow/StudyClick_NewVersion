@@ -98,7 +98,6 @@ const BtnWrapper = styled.div`
 const MessageWrapper = styled.div`
     width: 100%; /* Take full width */
     max-width: 70vw; /* Limit max width */
-    word-break: break-all;
     height: 800px;
     overflow: auto;
     margin-bottom: 5px;
@@ -172,7 +171,8 @@ const ChatInput: React.FC = () => {
     };
 
     const handleAttachClick = () => {
-        document.getElementById('file-input')?.click();
+        file ? setFile(null) :
+      document.getElementById('file-input')?.click();
     };
 
     useEffect(() => {
@@ -260,7 +260,9 @@ const ChatInput: React.FC = () => {
                     />
                     <BtnWrapper>
                         <Button type="button" onClick={handleAttachClick}>
-                            <img src={screpka} alt="Attach" />Прикрепить
+                            <img src={screpka} alt="Attach" />{
+                                file ? "Открепить" : "Прикрепить"
+                            }
                         </Button>
                         {file && (
                             <span style={{ marginLeft: '2px', color: "black", display: "flex", alignItems: "center", fontSize: "12px" }}>

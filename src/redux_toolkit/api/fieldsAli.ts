@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; // Импортируйте из react
 
-const baseUrl = 'https://vfmlbq9k-8000.uks1.devtunnels.ms/api/'
+const baseUrl = 'http://87.228.83.230:8000/api/'
 const baseQuery = fetchBaseQuery({
     baseUrl: baseUrl,
     prepareHeaders: (headers) => {
