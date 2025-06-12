@@ -168,7 +168,13 @@ align-items: flex-start;
 width: 100%; /* Ensure it takes full width inside ContentContainer */
 `;
 
-
+const SettingsButtonPass = styled(SettingsButton)`
+    cursor:alias;
+    &:hover{
+    background-color:transparent;
+    color:black;
+    }
+`
 const Profile = () => {
     const [logOut, { isLoading: isLoggingOut }] = useLogOutMutation();
     const { setAuth } = useActions();
@@ -206,7 +212,7 @@ const Profile = () => {
                     </ProfileHeader>
                     <ProfileWrapper>
                         {/* Access subscription name with optional chaining */}
-                        <SettingsButton>{userInfo?.subscription?.name || "Нет подписки"}</SettingsButton>
+                        <SettingsButtonPass>{userInfo?.subscription?.name || "Нет подписки"}</SettingsButtonPass>
                         <SettingsButton><NavLink to={"/settings"}>Настройки</NavLink></SettingsButton>
                         <SettingsButton>Написать в поддержку</SettingsButton>
                         <SettingsButton>Новости</SettingsButton>

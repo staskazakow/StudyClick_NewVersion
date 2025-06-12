@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router'; // Corrected import
 import left from "../../image/BackArrow.png"
@@ -171,6 +171,7 @@ const BackButton = styled.div`
 const tariffs = [
     {
         title: 'Бесплатно',
+        id:1,
         description: 'Свой мини-преподаватель в кармане, креативный ассистент и педагог-репетитор в одном чатике.',
         price: '0 рублей',
         buttonText: 'Текущий план',
@@ -185,6 +186,7 @@ const tariffs = [
     },
     {
         title: 'Тариф «Завтрак с ИИ»',
+        id:2,
         description: 'Отличный вариант для ежедневного общения, «пошутить-поработать» и вкусно залипнуть в текстах.',
         price: '299 рублей',
         buttonText: 'Перейти на базовый',
@@ -199,6 +201,7 @@ const tariffs = [
     },
     {
         title: 'Тариф «ИИ не уходит в отпуск»',
+        id:3,
         description: 'Это уже уровень «У меня есть свой ИИ-редактор, психолог, маркетолог и оракул — всё в одном лице». Можно вести блог, компанию и не сходить с ума.',
         price: '499 рублей',
         buttonText: 'Перейти на расширенный',
@@ -213,6 +216,7 @@ const tariffs = [
     },
     {
         title: 'Тариф «Корпорация Разума»',
+        id:4,
         description: 'Генерация всех постов в соцсетях на год вперёд (и ещё останется)',
         price: '899 рублей',
         buttonText: 'Перейти на премиум',
@@ -230,12 +234,18 @@ const tariffs = [
 // --- Component ---
 
 const TariffPage = () => {
-    const [createPayments] = useCreatePaymentMutation()
-    const handleButton = () => {
+    const [createPayments,{status,data}] = useCreatePaymentMutation()
+    const handleButton = (tariff:any) => {
         createPayments({
-            subscription_plan_id:1
+            subscription_plan_id:tariff.id
         })
     }
+    useEffect(() => {
+        if (data) {
+            window.location.href = data.confirmation_url
+        }
+
+    },[data])
     return (
         <PageContainer>
             <BackButton>
@@ -251,7 +261,7 @@ const TariffPage = () => {
                         <CardTitle>{tariff.title}</CardTitle>
                         <CardDescription>{tariff.description}</CardDescription>
                         <Price>{tariff.price}</Price>
-                        <CardButton onClick={() => handleButton()} isPrimary={tariff.isPrimary} disabled={tariff.isPrimary}>
+                        <CardButton onClick={() => handleButton(tariff)} isPrimary={tariff.isPrimary} disabled={tariff.isPrimary}>
                             {tariff.buttonText}
                         </CardButton>
                         <FeaturesList>

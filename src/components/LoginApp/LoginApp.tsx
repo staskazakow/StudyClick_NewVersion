@@ -161,7 +161,7 @@ const Chats = styled.div`
 
 const DialogWindow = styled.div<StyledProps>`
   flex-grow: 1;
-  height: 100%;
+  height: 95%;
   background-color: #ECECE5;
   border-radius: 30px;
   display: flex;

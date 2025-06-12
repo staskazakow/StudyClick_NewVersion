@@ -7,7 +7,7 @@ export const yoKassaApi = createApi({
   endpoints: builder => ({
     createPayment: builder.mutation({
       query: (paymentDetails) => ({
-        url: '/create', // Убедитесь, что этот URL соответствует вашему API бэкенда
+        url: '/create/', // Убедитесь, что этот URL соответствует вашему API бэкенда
         method: 'POST',
         body: paymentDetails,
       }),
