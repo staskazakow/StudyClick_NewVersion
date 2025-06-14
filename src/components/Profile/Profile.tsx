@@ -1,6 +1,6 @@
 import React from 'react';
 import { Wrapper as BaseWrapper } from '../LoginApp/LoginApp';
-import user from "../../image/User.png";
+import user from "../../image/user-icon.png";
 import styled from 'styled-components';
 import { NavLink } from 'react-router';
 import close from "../../image/close.png"
@@ -82,7 +82,7 @@ const UserLogo = styled.img`
 width: 120px; /* Default size */
 height: 120px; /* Default size */
 margin-bottom: 15px; /* Slightly adjusted margin */
-
+background-color:black;
 @media (max-width: 480px) {
     width: 100px; /* Smaller size on small screens */
     height: 100px;

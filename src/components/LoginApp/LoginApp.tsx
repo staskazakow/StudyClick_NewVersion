@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'; // Добавлен useRef
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import user from "../../image/User.png";
 import { ButtonChat } from '../Header/Header';
@@ -9,7 +9,8 @@ import { useSelector } from 'react-redux';
 import { state } from '../../redux_toolkit/store';
 import { Chat, Message } from '../../redux_toolkit/reducers/ChatSlice';
 import { useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
-import { Button, field, FileInput } from '../ChatInput/ChatInput';
+// Assuming Button and field are imported correctly
+import { Button, field } from '../ChatInput/ChatInput'; // Removed FileInput from this import
 import { NavLink } from 'react-router';
 import RightArrow from "../../image/RightArrow.svg"
 import { useCreateMessageMutation, useGetChatsQuery } from '../../redux_toolkit/api/chatsApi';
@@ -17,18 +18,17 @@ import DialogItem from '../Dialog/Dialog';
 import { FooterINN, LoadingOverlay, LoadingSpinner } from '../../App';
 import screpka from "../../image/screpka.png"
 import logo from "../../image/LogoIn.png"
+
 // Определение брейкпоинтов для адаптивности
 const breakpoints = {
   mobile: '1000px',
   tablet: '1024px',
 };
 
-
 interface StyledProps {
   isCollapsed?: boolean;
   isOpen?: boolean;
 }
-
 
 export const Wrapper = styled.div`
   display: flex;
@@ -40,7 +40,6 @@ export const Wrapper = styled.div`
   transition: all 0.3s ease;
   padding: 20px;
   box-sizing: border-box;
-
   @media (max-width: ${breakpoints.mobile}) {
     flex-direction: column;
     height: auto;
@@ -63,7 +62,6 @@ const ChatWindow = styled.div<StyledProps>`
   flex-shrink: 0;
   width: ${({ isOpen }) => isOpen ? "min-content" : "0"};
   height: ${({ isOpen }) => isOpen ? "95vh" : "0"};
-
   @media (max-width: 1000px) {
     min-width: 0;
     max-width: none;
@@ -95,7 +93,6 @@ const CollapseButton = styled.button<StyledProps>`
     transform: ${({ isCollapsed }) => isCollapsed ? 'rotate(180deg)' : 'rotate(0)'};
     transition: transform 0.3s ease;
   }
-
   @media (max-width: ${breakpoints.mobile}) {
     display: none;
   }
@@ -107,7 +104,6 @@ const NavBlock = styled.div`
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #eee;
-
   @media (max-width: ${breakpoints.mobile}) {
     padding: 15px;
   }
@@ -119,7 +115,7 @@ const Logo = styled.div`
   color: #333;
 `;
 
-export const ArrowLeft = styled.div`
+export const ArrowLeft = styled.div<StyledProps>`
   cursor: pointer;
   padding: 5px;
   transition: opacity 0.2s;
@@ -133,6 +129,12 @@ export const ArrowLeft = styled.div`
   &:hover {
     opacity: 0.8;
   }
+  img {
+    width: 20px;
+    height: 20px;
+    transform: ${({ isCollapsed }) => isCollapsed ? 'rotate(0)' : 'rotate(180deg)'};
+    transition: transform 0.3s ease;
+  }
 `;
 
 const Chats = styled.div`
@@ -140,11 +142,9 @@ const Chats = styled.div`
   color: #333;
   padding: 20px;
   overflow-y: auto;
-
   @media (max-width: ${breakpoints.mobile}) {
     padding: 15px;
   }
-
   & > div {
     padding: 10px;
     margin-bottom: 10px;
@@ -186,7 +186,6 @@ const Dialog = styled.div<StyledProps>`
   overflow-y: auto;
   position: relative;
   border-right: ${({ isCollapsed }: StyledProps) => (isCollapsed ? 'none' : '1px solid black')};
-
   @media (max-width: 1000px) {
     border-right: none;
     border-bottom: ${({ isCollapsed }: StyledProps) => (isCollapsed ? 'none' : '1px solid black')};
@@ -208,7 +207,6 @@ const Prompt = styled.div<StyledProps>`
   transition: all 0.3s ease;
   overflow: hidden;
   flex-shrink: 0;
-
   @media (max-width: 1000px) {
     width: 100%;
     min-width: 0;
@@ -249,7 +247,6 @@ const MessageBlock = styled.div`
   flex-grow: 1;
   width: 100%;
   overflow: hidden;
-
   @media (max-width: ${breakpoints.mobile}) {
     height: auto;
     min-height: 0;
@@ -276,7 +273,6 @@ const HeaderBlock = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-
   @media (max-width: 1000px) {
     flex-direction: column;
     align-items: stretch;
@@ -300,8 +296,7 @@ const FieldsBtn = styled.div`
   @media (max-width: ${breakpoints.mobile}) {
     margin-bottom: 0;
     padding: 8px 10px;
-    width:75vw; 
-
+    width:75vw;
   }
 `;
 
@@ -325,7 +320,6 @@ const Messages = styled.div`
   @media (max-width: ${breakpoints.mobile}) {
     padding-right: 5px;
   }
-
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -361,6 +355,7 @@ const AssistantsList = styled.ul`
      width:90%;
   }
 `;
+
 const LogoCont = styled.div`
 display:flex;
 align-items:center;
@@ -369,6 +364,7 @@ align-items:center;
     height:35px;
   }
 `
+
 const Asisstant = styled.li`
   color: black;
   padding: 8px 12px;
@@ -381,7 +377,6 @@ const Asisstant = styled.li`
   cursor: pointer;
   transition: background-color 0.2s;
   text-align: center;
-
   &:hover {
     background-color: #13233D55;
   }
@@ -399,22 +394,23 @@ export const MessagesItem = styled.div`
   /* Default for user messages */
   background-color: #D9D9D9;
   align-self: flex-end;
-
   &.assistant {
     background-color: #B2CEE2;
     align-self: flex-start;
   }
-
   @media (max-width: ${breakpoints.mobile}) {
     max-width: 85%;
     margin-right:10px;
   }
 `;
+
 type ErrorRes = { data: any; error?: undefined; } | { data?: undefined; error: any; }
+
 const LoadingDotsContainer = styled.div`
   display: flex;
   align-items: center;
 `;
+
 const loadingDotsAnimation = keyframes`
   0%, 80%, 100% {
     transform: scale(0);
@@ -425,6 +421,7 @@ const loadingDotsAnimation = keyframes`
     opacity: 1;
   }
 `;
+
 const Dot = styled.span`
   display: inline-block;
   width: 8px;
@@ -432,7 +429,7 @@ const Dot = styled.span`
   margin: 0 2px;
   background-color: currentColor; // Будет использовать цвет текста MessagesItem.assistant (черный)
   border-radius: 50%;
-  animation: \${loadingDotsAnimation} 1.4s infinite ease-in-out both;
+  animation: ${loadingDotsAnimation} 1.4s infinite ease-in-out both;
   &:nth-child(1) {
     animation-delay: -0.32s;
   }
@@ -443,6 +440,7 @@ const Dot = styled.span`
     animation-delay: 0s;
   }
 `;
+
 const MessageWrapper = styled.div`
 display:flex;
 flex-direction:row;
@@ -450,7 +448,9 @@ flex-direction:row;
   flex-direction:column;
 }
 `
+
 interface LoginAppProps { }
+
 export const LoadingDots: React.FC = () => (
   <LoadingDotsContainer>
     <Dot />
@@ -458,6 +458,20 @@ export const LoadingDots: React.FC = () => (
     <Dot />
   </LoadingDotsContainer>
 );
+
+// Define the styled FileInput component here
+const StyledFileInput = styled.input`
+  /* Make the file input invisible but still interactable */
+  opacity: 0;
+  position: absolute;
+  z-index: -1; /* Ensure it's behind the label/button */
+  width: 0.1px;
+  height: 0.1px;
+  overflow: hidden;
+  pointer-events: none; /* Prevent it from interfering with other elements */
+`;
+
+
 const LoginApp: React.FC<LoginAppProps> = () => {
   const [message, setMessage] = useState<string>("");
   const [showAssistants, setShowAssistants] = useState<boolean>(false);
@@ -471,15 +485,23 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   const { data: chats, isLoading } = useGetChatsQuery(0)
   const chatsFromStore = useSelector((state: state) => state.chat.chat_data)
   const current_chat = useSelector((state: state) => state.chat.current_chat)
+
   // Ref для контейнера сообщений для автопрокрутки
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const [fieldName, setFieldName] = useState("")
-  const [file, setFile] = useState<null | File>()
+  const [file, setFile] = useState<File | null>(null); // Initialize with null
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+    } else {
+        setFile(null); // Set file to null if no file is selected (e.g., user cancels)
     }
+     // Reset the file input value to allow selecting the same file again
+    e.target.value = '';
   };
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.matchMedia(`(max-width: ${breakpoints.mobile})`).matches);
@@ -498,13 +520,13 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   }, [chats, SetChats]);
 
   const messagesFromStore: Array<Message> = useSelector((state: state) => state.chat.current_chat);
+
   // Эффект для автоматической прокрутки вниз при изменении сообщений
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
-  }, [messagesFromStore, messagesEndRef]); // Зависимости: массив сообщений и сам ref
-
+  }, [messagesFromStore]); // Зависимости: массив сообщений
 
   const sendMessage = async () => {
     if (message.trim() !== "" || file) {
@@ -522,9 +544,8 @@ const LoginApp: React.FC<LoginAppProps> = () => {
         const res: ErrorRes = await createMessage(
           formData
         );
-
         setMessage("");
-        setFile(null)
+        setFile(null) // Clear the file state after sending the message
         if (res.error) {
           setTokenLimit(true)
           const errorMessage = res.error.data.error || "An error occurred."; // Safely access the error message
@@ -534,13 +555,13 @@ const LoginApp: React.FC<LoginAppProps> = () => {
           PushMessage({ message: res.data.response, role: "bot" });
           if (localStorage.getItem("chat_id") == "0") {
             let id = res.data.chat_id
-
             localStorage.setItem("chat_id", id as string)
           }
         } else {
           console.error("Response from createMessage is not as expected:", res);
         }
       } catch (error) {
+         console.error("Error sending message:", error); // Log the error
       }
     }
   };
@@ -579,15 +600,12 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   const HandleChat = (id: string | number) => {
     const numericId = Number(id);
     localStorage.setItem("chat_id", numericId.toString());
-
     if (chats) {
       const selectedChat = chatsFromStore.find((chat: Chat) => chat.id === numericId);
-
       if (selectedChat) {
         setCurrentChatObj(selectedChat);
         SetCurrentChatMessages(selectedChat.messages || []);
         SetField()
-
       } else {
         setCurrentChatObj(null);
         SetCurrentChatMessages([]);
@@ -595,28 +613,27 @@ const LoginApp: React.FC<LoginAppProps> = () => {
     }
   };
 
-  // debugger
   const SetField = () => {
     if (currentChatObj && currentChatObj.study_field && fieldsApiData) {
       const field = fieldsApiData?.find((field: field) => field.id === currentChatObj.study_field)
-      localStorage.setItem("study_field_id", currentChatObj.study_field.toString());
-      localStorage.setItem("study_field_name", field.name);
-      setFieldName(field.name)
+      if (field) { // Add a check if field is found
+        localStorage.setItem("study_field_id", currentChatObj.study_field.toString());
+        localStorage.setItem("study_field_name", field.name);
+        setFieldName(field.name)
+      }
     }
   }
-  const handleAttachClick = () => {
-    file ? setFile(null) :
-      document.getElementById('file-input')?.click();
-  };
+
+  // Simplified or removed handleAttachClick as logic is now in render
+
   useEffect(() => {
     const storedChatId = localStorage.getItem("chat_id");
-
     if (storedChatId && chats && chats.length > 0) {
       HandleChat(storedChatId);
       SetField()
-
     }
-  }, [chatsFromStore, currentChatObj]);
+  }, [chatsFromStore, chats]); // Added 'chats' to the dependency array
+
   return (
     <Wrapper>
       {isLoading ?
@@ -634,13 +651,13 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                 <img src={logo} alt='logo'/>
                 <Logo>Guiding Star</Logo>
               </LogoCont>
-              <ArrowLeft onClick={toggleSidebar}>
-                <img src={Left} alt="Toggle Sidebar" />
+              <ArrowLeft onClick={toggleSidebar} isCollapsed={isPromptCollapsed}>
+                <img src={RightArrow} alt="Toggle Sidebar" />
               </ArrowLeft>
             </NavBlock>
             <Chats>
               {chatsFromStore && chatsFromStore.map((e: Chat) => (
-                <DialogItem element={e} handle={HandleChat} />
+                <DialogItem key={e.id} element={e} handle={HandleChat} /> // Added key prop
               ))}
             </Chats>
           </ChatWindow>
@@ -652,7 +669,6 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     <img src={RightArrow} alt="Open Sidebar" />
                   </ArrowLeft>
                 )}
-
                 {isMobile && (
                   isPromptCollapsed ? (
                     <FieldsBtn onClick={togglePrompt}>Асисстенты</FieldsBtn>
@@ -660,9 +676,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     <FieldsBtn onClick={togglePrompt}>Свернуть</FieldsBtn>
                   )
                 )}
-
                 {!isMobile && <FieldsBtn>{fieldName || 'Сфера обучения'}</FieldsBtn>}
-
                 <div style={{ display: "flex", gap: "10px", alignItems: "center", marginLeft: !isMobile && isSidebarOpen ? "auto" : "0" }}>
                   <NavLink style={{ textDecoration: "none" }} to={"/tarif"}>
                     <PlanUpped>Улучшить план</PlanUpped>
@@ -676,14 +690,13 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                       onClick={togglePrompt}
                     >
                       <img
-                        src={isPromptCollapsed ? RightArrow : Left}
+                        src={RightArrow}
                         alt={isPromptCollapsed ? "Развернуть Prompt" : "Свернуть Prompt"}
                       />
                     </CollapseButton>
                   )}
                 </div>
               </HeaderBlock>
-
               <MessageBlock>
                 {/* Привязываем ref к контейнеру сообщений */}
                 <Messages ref={messagesEndRef}>
@@ -713,28 +726,38 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     disabled={currentChatObj ? false : true}
                   />
                   {
-                    currentChatObj ? <>
-                      <FileInput
-                        type="file"
-                        id="file-input"
-                        onChange={handleFileChange}
-                        accept='.pdf,.docx'
-                      />
+                    currentChatObj ? (
                       <div style={{ display: "flex", alignItems: "center", gap: "3px", marginTop: "5px" }}>
-                        <Button type="button" onClick={handleAttachClick}>
-                          <img src={screpka} alt="Attach" />{file ? "Открепить" : "Закрепить"}
-                        </Button>
+                        {/* Conditionally render Label/Input or Button with onClick */}
+                        {file === null ? (
+                           <label htmlFor="file-input">
+                            <Button as="span" type="button">
+                              <img src={screpka} alt="Attach" />Закрепить
+                            </Button>
+                          </label>
+                        ) : (
+                           <Button type="button" onClick={() => setFile(null)}>
+                             <img src={screpka} alt="Detach" />Открепить
+                           </Button>
+                        )}
+
+                        {/* The actual file input, styled to be invisible */}
+                        <StyledFileInput
+                          type="file"
+                          id="file-input"
+                          onChange={handleFileChange}
+                          accept='.pdf,.docx'
+                        />
                         <Button onClick={() => sendMessage()}>Отправить</Button>
                         {file && <div>{file.name.length < 25 ? file.name : file.name.slice(0, 25) + "..."}</div>}
                       </div>
-                    </>
-                      :
+                    ) : (
                       <> </>
+                    )
                   }
                 </div>
               </MessageBlock>
             </Dialog>
-
             {(!isMobile || !isPromptCollapsed) && (
               <Prompt isCollapsed={isPromptCollapsed}>
                 {!isPromptCollapsed && (
@@ -751,7 +774,6 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                       width: '90%',
                       textAlign: 'center'
                     }} >{showAssistants ? 'Скрыть ассистентов' : 'Показать ассистентов'}</button>
-
                     {showAssistants && (
                       <AssistantsList>
                         {fieldsApiData && fieldsApiData.map((e: field) => (
@@ -771,15 +793,12 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               </Prompt>
             )}
           </DialogWindow>
-
         </MessageWrapper>
-
           <FooterINN style={{color:"black"}}>
             Артеев Максим Николаевич ИНН - 110406474346
           </FooterINN>
         </>
       }
-
     </Wrapper>
   );
 };

@@ -131,6 +131,7 @@ const App: React.FC = () => {
         <Route path='/settings' element={<Settings />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/tarif' element ={<TariffPage/>}/>
+        <Route path='/api/payments/callback/' element ={<TariffPage/>}/>
         <Route
           path='/'
           element={auth ? <LoginApp /> : <Main/>}
