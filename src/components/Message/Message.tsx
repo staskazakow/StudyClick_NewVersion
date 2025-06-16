@@ -42,8 +42,6 @@ const MessageContainer = styled.div`
 `;
 
 const Message = ({ role, message }: Props) => {
-  // console.log(role); // Keep console log if needed for debugging
-
   return (
     <MessageContainer>
       {role === "user" ? (

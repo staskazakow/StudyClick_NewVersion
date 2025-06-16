@@ -147,40 +147,27 @@ const Registration = () => {
         try {
             const registerResult = await register({ email, username: name, password });
             if ('error' in registerResult) {
-                
                 const apiError = registerResult.error as ApiErrorResponse;
-                
                 setErrorMessage(apiError.data.error);
                 return;
             }
 
             const jwtResult = await getJWT({ username: name, password });
-
             if ('error' in jwtResult) {
                 const apiError = jwtResult.error as ApiErrorResponse;
-                
                 setErrorMessage(apiError.data.error);
                 return;
             }
-
             setAuth(true);
             if(jwtResult.data) {
                 window.location.href = '/';
             }
-            // If both operations were successful:
-         
-            // window.location.href = '/';
-            //console.log('Registration and JWT retrieval successful'); //Better to use a logger
         } catch (error) {
             console.error('An unexpected error occurred:', error);
             setErrorMessage('An unexpected error occurred during registration.');
         }
     };
-
     const isLoading = isRegistering || isGettingJWT;
-
-    console.log(errorMessage); // Keep console log for debugging
-
     return (
         <Wrapper>
             <BackLinkWrapper to="/"> {/* Use the styled NavLink here */}

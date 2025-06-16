@@ -182,7 +182,6 @@ const tariffs = [
             '1-2 кода на Python, Scratch, JavaScript — с объяснениями и комментариями'
         ],
         isPrimary: true,
-        helpText: 'Мне нужна помощь с оплатой или выставлением счета'
     },
     {
         title: 'Тариф «Завтрак с ИИ»',
@@ -197,7 +196,6 @@ const tariffs = [
             'Получить 100-150 хороших ответов в стиле «мини-эссе»'
         ],
         isPrimary: false,
-        helpText: 'Мне нужна помощь с оплатой или выставлением счета'
     },
     {
         title: 'Тариф «ИИ не уходит в отпуск»',
@@ -212,7 +210,6 @@ const tariffs = [
             'Эквивалентно: 15 000-20 000 коротких взаимодействий с ИИ'
         ],
         isPrimary: false,
-        helpText: 'Мне нужна помощь с оплатой или выставлением счета'
     },
     {
         title: 'Тариф «Корпорация Разума»',
@@ -227,14 +224,14 @@ const tariffs = [
             'Эквивалентно: 30 000-40 000 полных взаимодействий с ИИ'
         ],
         isPrimary: false,
-        helpText: 'Мне нужна помощь с оплатой или выставлением счета'
     },
 ];
 
 // --- Component ---
 
 const TariffPage = () => {
-    const [createPayments,{status,data}] = useCreatePaymentMutation()
+    const helpText = 'Мне нужна помощь с оплатой или выставлением счета'
+    const [createPayments,{data}] = useCreatePaymentMutation()
     const handleButton = (tariff:any) => {
         createPayments({
             subscription_plan_id:tariff.id
@@ -269,7 +266,7 @@ const TariffPage = () => {
                                 <FeatureItem key={i}>{feature}</FeatureItem>
                             ))}
                         </FeaturesList>
-                        <HelpText>{tariff.helpText}</HelpText>
+                        <HelpText>{helpText}</HelpText>
                     </Card>
                 ))}
             </CardsContainer>

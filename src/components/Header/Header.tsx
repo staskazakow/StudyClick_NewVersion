@@ -101,7 +101,7 @@ const Header: React.FC = () => {
   const auth = useSelector((state: state) => state.app.auth)
   const { setAuth } = useActions()
   const { AddChat } = useActions()
-  const [Out, { data }] = useLogOutMutation()
+  const [Out] = useLogOutMutation()
   const logOut = () => {
     setAuth(false)
     Out()

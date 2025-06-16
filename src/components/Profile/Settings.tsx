@@ -4,20 +4,6 @@ import { useDeleteAccountMutation, useGetUserQuery } from '../../redux_toolkit/a
 
 // --- TYPE DEFINITIONS ---
 
-interface UserInfo {
-  email: string;
-  subscription?: {
-    name: string;
-  };
-  // Add other user properties if available
-}
-
-interface SubscriptionInfo {
-  name: string;
-  // Add other subscription properties
-}
-
-// Mock for NavLink if react-router-dom is not fully set up in this environment
 interface NavLinkProps {
   to: string;
   children: React.ReactNode;
@@ -29,12 +15,6 @@ const NavLink: React.FC<NavLinkProps> = ({ to, children, style, className }) => 
     {children}
   </a>
 );
-
-
-interface MutationState {
-  isLoading: boolean;
-}
-
 
 // Mock Wrapper component (replace with your actual Wrapper)
 const Wrapper = styled.div`
@@ -434,7 +414,6 @@ const ModalFooter = styled.div`
 const ModalButton = styled(ActionButton)` // Inherit base styles from ActionButton
   font-size: 15px; // Slightly larger for modal context
   padding: 10px 20px;
-
   &.confirm {
     background-color: #e03131;
     color: white;
@@ -442,7 +421,6 @@ const ModalButton = styled(ActionButton)` // Inherit base styles from ActionButt
       background-color: #c92a2a;
     }
   }
-
   &.cancel {
     background-color: #f1f3f5; // Lighter cancel button
     color: #495057;
@@ -451,34 +429,21 @@ const ModalButton = styled(ActionButton)` // Inherit base styles from ActionButt
       background-color: #e9ecef;
     }
   }
-  
   @media (max-width: ${breakpoints.mobile}) {
     width: 100%; 
     padding: 12px; // Ensure good tap target size
   }
 `;
 export const CloseBtn = styled.img`
-
   width: 50px; // Default size
-
   height: 50px;
-
-  // color: black; // Note: color property doesn't apply to img src
-
   @media (max-width: ${breakpoints.tablet}) {
-
     width: 40px; // Smaller size on tablet
-
     height: 40px;
-
   }
-
   @media (max-width: ${breakpoints.mobile}) {
-
     width: 30px; // Even smaller size on mobile
-
     height: 30px;
-
   }
 
 `;
@@ -489,19 +454,15 @@ const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('account');
   const { data: userInfo, isLoading: isLoadingUser } = useGetUserQuery();
   const [deleteAccountMutation, { isLoading: isDeletingAccount }] = useDeleteAccountMutation();
-
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [passwordInput, setPasswordInput] = useState<string>('');
   const [deleteError, setDeleteError] = useState<string>('');
-
   const mail = userInfo?.email;
-
   const handleOpenDeleteModal = () => {
     setDeleteError('');
     setPasswordInput('');
     setIsModalOpen(true);
   };
-  console.log(userInfo)
   const handleCloseModal = () => {
     if (isDeletingAccount) return; // Prevent closing while deletion is in progress
     setIsModalOpen(false);

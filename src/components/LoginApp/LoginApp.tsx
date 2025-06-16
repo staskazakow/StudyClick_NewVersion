@@ -3,14 +3,12 @@ import styled, { keyframes } from 'styled-components';
 import user from "../../image/User.png";
 import { ButtonChat } from '../Header/Header';
 import ChatBtn from "../../image/message.png";
-import Left from "../../image/BackArrow.png";
 import { useActions } from '../../common/useActions';
 import { useSelector } from 'react-redux';
 import { state } from '../../redux_toolkit/store';
 import { Chat, Message } from '../../redux_toolkit/reducers/ChatSlice';
 import { useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
-// Assuming Button and field are imported correctly
-import { Button, field } from '../ChatInput/ChatInput'; // Removed FileInput from this import
+import { Button, field } from '../ChatInput/ChatInput';
 import { NavLink } from 'react-router';
 import RightArrow from "../../image/RightArrow.svg"
 import { useCreateMessageMutation, useGetChatsQuery } from '../../redux_toolkit/api/chatsApi';
@@ -476,19 +474,14 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   const [message, setMessage] = useState<string>("");
   const [showAssistants, setShowAssistants] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-  const { AddMessage, PushMessage, SetChats, SetCurrentChat: SetCurrentChatMessages, AddChatLogin } = useActions();
-  const [tokenLimit, setTokenLimit] = useState(false)
+  const { PushMessage, SetChats, SetCurrentChat: SetCurrentChatMessages, AddChatLogin } = useActions();
   const { data: fieldsApiData } = useGetFieldsQuery();
   const [isPromptCollapsed, setIsPromptCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [createMessage, { isLoading: SendFetching }] = useCreateMessageMutation()
   const { data: chats, isLoading } = useGetChatsQuery(0)
   const chatsFromStore = useSelector((state: state) => state.chat.chat_data)
-  const current_chat = useSelector((state: state) => state.chat.current_chat)
-
-  // Ref для контейнера сообщений для автопрокрутки
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const [fieldName, setFieldName] = useState("")
   const [file, setFile] = useState<File | null>(null); // Initialize with null
 
@@ -547,7 +540,6 @@ const LoginApp: React.FC<LoginAppProps> = () => {
         setMessage("");
         setFile(null) // Clear the file state after sending the message
         if (res.error) {
-          setTokenLimit(true)
           const errorMessage = res.error.data.error || "An error occurred."; // Safely access the error message
           PushMessage({ message: errorMessage, role: "bot" });
         }
@@ -741,7 +733,6 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                            </Button>
                         )}
 
-                        {/* The actual file input, styled to be invisible */}
                         <StyledFileInput
                           type="file"
                           id="file-input"

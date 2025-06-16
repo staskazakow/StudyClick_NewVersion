@@ -136,9 +136,6 @@ const HelperDropdown = styled.div<HelperDropdownProps>`
     }
 `;
 
-interface el {
-    key: string;
-}
 export interface field {
     id: number,
     name: string
@@ -152,7 +149,6 @@ const HelperButton = styled(Button)`
 const ChatInput: React.FC = () => {
     const message_data: Array<MessageInterface> = useSelector((state: state) => state.chat.messages_data);
     const [input, setInput] = useState('');
-    const { SetFieldName } = useActions()
     const [hasFocus, setHasFocus] = useState(false);
     const [file, setFile] = useState<null | File>(null);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -195,7 +191,6 @@ const ChatInput: React.FC = () => {
             let res = await createMessage(formData)
             if (res.error) {
                 AddMessage({ message: "Ошибка", role: "bot" });
-
             }
             if (res.data) {
                 AddMessage({ message: res.data.response, role: "bot" });

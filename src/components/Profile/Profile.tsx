@@ -178,21 +178,12 @@ const SettingsButtonPass = styled(SettingsButton)`
 const Profile = () => {
     const [logOut, { isLoading: isLoggingOut }] = useLogOutMutation();
     const { setAuth } = useActions();
-
     const { data: userInfo, isLoading: isGettingUser } = useGetUserQuery(undefined);
-
-    console.log(userInfo);
-
     const HandleLogout = async () => {
         await logOut(); // Use async/await with logOut mutation
         setAuth(false);
-        // Optionally redirect here if setAuth(false) doesn't trigger navigation
-        // via an effect or other logic elsewhere in the app.
-        // window.location.href = '/login'; // Example redirect, uncomment if needed
     };
-
     const isLoading = isLoggingOut || isGettingUser;
-
     return (
         <Wrapper>
             {isLoading ? (

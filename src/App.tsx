@@ -77,6 +77,7 @@ display:flex;
 justify-content:center;
 color:#c8ccd1;
 font-size:14px;
+color:black;
 `
 const Main = () => {
    const message_data:Array<Message> = useSelector((state:state) => state.chat.messages_data)

@@ -8,7 +8,6 @@ interface DialogItemProps {
   element: Chat;
   handle: (id: string | number) => void; // Original handler function for selecting the chat
   onSaveChatName?: (id: string | number, newTitle: string) => void; // Callback to save the new chat name
-  // onDeleteChat?: (id: string | number) => void; // Optional: for a complete delete functionality
 }
 
 // Styled Components
@@ -108,7 +107,6 @@ const OptionsMenuItem = styled.div`
   font-size: 13px;
   color: #343a40;
   cursor: pointer;
-
   &:hover {
     background-color: #f1f3f5; 
   }

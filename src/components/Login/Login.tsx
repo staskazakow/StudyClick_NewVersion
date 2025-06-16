@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import BackArrow from '../../image/BackArrow.png';
 import styled from 'styled-components';
-import { NavLink } from 'react-router'; // Use react-router-dom for web applications <sup data-citation="3" className="inline select-none [&>a]:rounded-2xl [&>a]:border [&>a]:px-1.5 [&>a]:py-0.5 [&>a]:transition-colors shadow [&>a]:bg-ds-bg-subtle [&>a]:text-xs [&>svg]:w-4 [&>svg]:h-4 relative -top-[2px] citation-shimmer"><a href="https://clerk.com/blog/building-a-react-login-page-template" target="_blank" title="Building a React Login Page Template">3</a></sup>
+import { NavLink } from 'react-router'; 
 import { useLoginMutation } from '../../redux_toolkit/api/authApi';
 // Styled Components definitions (re-using the improved styles)
 const Wrapper = styled.div`
