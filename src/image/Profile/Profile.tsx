@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wrapper as BaseWrapper } from '../LoginApp/LoginApp';
+import { Wrapper as BaseWrapper } from '../../components/LoginApp/LoginApp';
 import user from "../../image/user-icon.png";
 import styled from 'styled-components';
 import { NavLink } from 'react-router';

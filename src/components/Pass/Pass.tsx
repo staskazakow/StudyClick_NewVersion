@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router'; // Corrected import
-import left from "../../image/BackArrow.png"
+import left from "../../image/RightArrow.svg"
 import { useCreatePaymentMutation } from '../../redux_toolkit/api/yookassaApi';
 
 // --- Styled Components ---
@@ -247,8 +247,8 @@ const TariffPage = () => {
         <PageContainer>
             <BackButton>
                 <NavLink style={{color:"black"}} to={"/"}>
-                <img src={left} alt="Go Back" />
-                 Go Back
+                <img style={{rotate:"180deg"}} src={left} alt="Go Back" />
+                 Вернуться назад
                 </NavLink>
             </BackButton>
             <MainTitle>Обновите свой план</MainTitle>

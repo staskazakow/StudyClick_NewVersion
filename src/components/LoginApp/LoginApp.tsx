@@ -507,13 +507,13 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   }, []);
 
   useEffect(() => {
-    if (chats) {
+    if (chats && chats?.length != 0) {
       SetChats(chats);
     }
   }, [chats, SetChats]);
 
   const messagesFromStore: Array<Message> = useSelector((state: state) => state.chat.current_chat);
-
+  // messagesFromStore.length > 0 ? : SetCurrentChatMessages()
   // Эффект для автоматической прокрутки вниз при изменении сообщений
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -620,10 +620,11 @@ const LoginApp: React.FC<LoginAppProps> = () => {
 
   useEffect(() => {
     const storedChatId = localStorage.getItem("chat_id");
-    if (storedChatId && chats && chats.length > 0) {
+    if (storedChatId && chats) {
       HandleChat(storedChatId);
       SetField()
     }
+   
   }, [chatsFromStore, chats]); // Added 'chats' to the dependency array
 
   return (
@@ -692,17 +693,13 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               <MessageBlock>
                 {/* Привязываем ref к контейнеру сообщений */}
                 <Messages ref={messagesEndRef}>
-                  {messagesFromStore.length > 0 ? (
+                  {
                     messagesFromStore.map((e, index) => (
                       <MessagesItem key={index} className={e.role === 'bot' ? 'assistant' : ''}>
                         {e.message}
                       </MessagesItem>
                     ))
-                  ) : (
-                    <div style={{ textAlign: 'center', color: '#777', marginTop: '20px' }}>
-                      {currentChatObj ? "Сообщений не найдено" : "Выберите чат для начала общения"}
-                    </div>
-                  )}
+                  }
                   {SendFetching && (
                     <MessagesItem className="assistant">
                       <LoadingDots />

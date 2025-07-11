@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 let initialState: state = {
     messages_data: [],
-    chat_data: [],
+    chat_data: [{
+                created_at: "",
+                id: 0,
+                messages: [],
+                study_field: 0,
+                title: "New chat"
+            },],
     current_chat: [],
     field_name: "Помощник",
 }

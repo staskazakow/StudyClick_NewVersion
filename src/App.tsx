@@ -12,8 +12,8 @@ import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import { state } from './redux_toolkit/store';
 import LoginApp from './components/LoginApp/LoginApp';
-import Profile from './components/Profile/Profile';
-import Settings from './components/Profile/Settings';
+import Profile from './image/Profile/Profile';
+import Settings from './image/Profile/Settings';
 import { Message } from './redux_toolkit/reducers/ChatSlice';
 import TariffPage from './components/Pass/Pass';
 
