@@ -12,13 +12,16 @@ import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import { state } from './redux_toolkit/store';
 import LoginApp from './components/LoginApp/LoginApp';
-import Profile from './image/Profile/Profile';
-import Settings from './image/Profile/Settings';
+import Profile from './components/Profile/Profile';
+import Settings from './components/Profile/Settings';
 import { Message } from './redux_toolkit/reducers/ChatSlice';
 import TariffPage from './components/Pass/Pass';
+import About from './components/About/About';
+import Terms from './components/Terms/Terms';
+import Support from './components/Support/Support';
 
 const AppContainer = styled.div`
-  font-family: "Inter", sans-serif;
+overflow-x:hidden;
   font-weight:400;
   margin:0;
   background: #13233D;
@@ -29,6 +32,9 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-family: 'Montserrat Alternates', sans-serif;
+    background-color: #blue;
+  
 `;
 
 export const MainWrapper = styled.div`
@@ -87,12 +93,15 @@ const Main = () => {
       
         <MainWrapper>
           <Header />
-          {message_data.length === 0 && <MainContent />}
-          <ChatInput />
-          <FooterINN>
+          <div style={{display:'flex',flexDirection:'column'}}>
+            {message_data.length === 0 && <MainContent />}
+            <ChatInput />
+
+          </div>
+          {/* <FooterINN>
             Артеев Максим Николаевич 
              ИНН - 
-           110406474346</FooterINN>
+           110406474346</FooterINN> */}
         </MainWrapper>
     </div>
   );
@@ -101,24 +110,25 @@ const Main = () => {
 const App: React.FC = () => {
   const [getAuth, { isLoading }] = useRefreshTokenMutation();
   const { setAuth } = useActions();
-  useEffect(() => {
-    const isAuth = async () => {
-      try {
-        const { data } = await getAuth(Cookies.get("refresh"));
-        if (data) {
-          setAuth(true);
-          if (!localStorage.getItem('accessToken')) {
-            localStorage.setItem('accessToken', data.access)
-          }
-        } 
-      } catch (error) {
-        setAuth(false);
-        console.error("Failed to authenticate:", error);
-      }
-    };
-    isAuth()
-  }, []);
-  const auth = useSelector((state: state) => state.app.auth)
+  // useEffect(() => {
+  //   const isAuth = async () => {
+  //     try {
+  //       const { data } = await getAuth(Cookies.get("refresh"));
+  //       if (data) {
+  //         setAuth(true);
+  //         if (!localStorage.getItem('accessToken')) {
+  //           localStorage.setItem('accessToken', data.access)
+  //         }
+  //       } 
+  //     } catch (error) {
+  //       setAuth(false);
+  //       console.error("Failed to authenticate:", error);
+  //     }
+  //   };
+  //   isAuth()
+  // }, []);
+  // const auth = useSelector((state: state) => state.app.auth)
+  const auth =false
   return (
     <AppContainer>
       {isLoading ? (
@@ -133,6 +143,9 @@ const App: React.FC = () => {
         <Route path='/profile' element={<Profile />} />
         <Route path='/tarif' element ={<TariffPage/>}/>
         <Route path='/api/payments/callback/' element ={<TariffPage/>}/>
+        <Route path='/about' element ={<About/>}/>
+        <Route path='/terms' element ={<Terms/>}/>
+        <Route path='/support' element ={<Support/>}/>
         <Route
           path='/'
           element={auth ? <LoginApp /> : <Main/>}

@@ -25,9 +25,8 @@ const HeaderContainer = styled.header`
 `;
 
 const Title = styled.div`
-  font-size: 24px; // Размер шрифта заголовка
+  font-size: 20px; // Размер шрифта заголовка
   font-weight: 500;
-  font-family:sans-serif;
   @media (max-width: 600px) {
     font-size: 20px; // Уменьшение размера на мобильных устройствах
   }
@@ -48,7 +47,7 @@ const Button = styled.button`
   background-color: #C3BFBF66; // Цвет кнопок
   color: #2b2d42;
   border: none;
-  border-radius: 10px;
+  border-radius: 20px;
   font-weight:400;
   padding: 10px 15px;
   cursor: pointer;
@@ -73,8 +72,8 @@ padding:1px 6px 1px 6px;
 }
 `
 const ButtonIn = styled(Button)`
-background:#000000;
-color:white;
+background:#B2CEE2;
+color:black;
 transition:0.3s;
 &:hover {
    background-color:rgb(19, 19, 19);
@@ -110,24 +109,24 @@ const Header: React.FC = () => {
   }
 
   return (
-    <HeaderContainer>
+    <HeaderContainer style={{fontFamily:"Montserrat Alternates"}}>
       <FuncBlock>
         <ButtonChat><img onClick={() => AddChat(1)} src={message} title='New Chat' alt="" /></ButtonChat>
         <div style={{display:"flex",alignItems:"center"}}>
           <img src={logo} alt="logo" />
-          <Title>Guiding Star</Title>
+          <Title>Mindsy</Title>
         </div>
       </FuncBlock>
       {auth ?
         <div onClick={logOut}>Log out</div>
         : <ButtonContainer>
           <NavLink to={"/register"}>
-            <ButtonReg>Регистрация</ButtonReg>
+            <ButtonReg style={{fontFamily:"Montserrat Alternates"}}>Регистрация</ButtonReg>
 
           </NavLink>
           <NavLink to={"/login"}>
 
-            <ButtonIn>Войти</ButtonIn>
+            <ButtonIn style={{fontFamily:"Montserrat Alternates"}}>Войти</ButtonIn>
           </NavLink>
         </ButtonContainer>}
 

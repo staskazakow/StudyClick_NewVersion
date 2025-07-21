@@ -17,9 +17,9 @@ const MainContainer = styled.div`
 
 const MainContent: React.FC = () => {
   return (
-    <MainContainer> 
-      <h1 style={{fontWeight:"300",fontFamily:"sans-serif"}}>Добро пожаловать в Guiding Star</h1>
-      <p style={{color:"#C3BFBF",}}>Чем помочь сегодня?</p>
+    <MainContainer style={{fontFamily:"Montserrat Alternates"}}> 
+      <h1 style={{fontWeight:"300",color:"#B2CEE2"}}>Добро пожаловать в Mindsy</h1>
+      <p style={{color:"#ECECE5",fontSize:"30px"}}>Чем помочь сегодня?</p>
     </MainContainer >
   );
 };

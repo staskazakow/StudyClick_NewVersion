@@ -390,7 +390,6 @@ export const MessagesItem = styled.div`
   line-height: 1.4;
   margin-right:4px;
   /* Default for user messages */
-  background-color: #D9D9D9;
   align-self: flex-end;
   &.assistant {
     background-color: #B2CEE2;

@@ -30,11 +30,9 @@ const UserMessage = styled(MessageBubble)`
 `;
 
 const BotMessage = styled(MessageBubble)`
-  background-color: #e5e5ea; // Light grey background for bot
-  color: #000; // Black text for bot message
+  color: white; // Black text for bot message
   margin-right: auto; // Keep message on the left
   margin-left: 8px; // Small margin from the left edge of container
-  border-bottom-left-radius: 2px; // Sharpen bottom-left corner
 `;
 
 const MessageContainer = styled.div`
