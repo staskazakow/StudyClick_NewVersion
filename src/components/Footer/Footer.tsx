@@ -157,9 +157,9 @@ const Footer = () => {
          <p>Присоединяйтесь к нам в соцсети</p>
        </div>
        <div className="social-icons" style={{ display:'flex', justifyContent:'center', gap:'45px', marginTop:'27px' }}>
-         <img src={yt} alt="Youtube" style={{ width:'40px', height:'auto' }} />
-         <img src={tg} alt="Telegram" style={{ width:'40px', height:'auto' }} onClick={LinkTg} />
-         <img src={vk} alt="Вконтакте" style={{ width:'40px', height:'auto' }} onClick={LinkVk} />
+         <img src={yt} alt="Youtube" style={{ width:'40px', height:'auto' ,cursor:"pointer"}} />
+         <img src={tg} alt="Telegram" style={{ width:'40px', height:'auto',cursor:"pointer" }} onClick={LinkTg} />
+         <img src={vk} alt="Вконтакте" style={{ width:'40px', height:'auto',cursor:"pointer" }} onClick={LinkVk} />
        </div>
      </div>
 

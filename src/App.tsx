@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header/Header';
 import MainContent from './components/MainContent/MainContent';
 import ChatInput from './components/ChatInput/ChatInput';
@@ -19,6 +19,8 @@ import TariffPage from './components/Pass/Pass';
 import About from './components/About/About';
 import Terms from './components/Terms/Terms';
 import Support from './components/Support/Support';
+import Price from './components/Price/Price';
+import Modal from './components/Modal/Modal';
 
 const AppContainer = styled.div`
 overflow-x:hidden;
@@ -86,23 +88,24 @@ font-size:14px;
 color:black;
 `
 const Main = () => {
-   const message_data:Array<Message> = useSelector((state:state) => state.chat.messages_data)
-
+  const message_data:Array<Message> = useSelector((state:state) => state.chat.messages_data)
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsOpen(true);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []); // пустой массив зависимостей — только при МОНТАЖ
   return (
     <div style={{ height: "100vh" }}>
-      
-        <MainWrapper>
-          <Header />
-          <div style={{display:'flex',flexDirection:'column'}}>
-            {message_data.length === 0 && <MainContent />}
-            <ChatInput />
-
-          </div>
-          {/* <FooterINN>
-            Артеев Максим Николаевич 
-             ИНН - 
-           110406474346</FooterINN> */}
-        </MainWrapper>
+      <MainWrapper>
+        <Header />
+        <div style={{display:'flex',flexDirection:'column'}}>
+          {message_data.length === 0 && <MainContent />}
+          <ChatInput />
+          <Modal isOpen={isOpen} setIsOpen={setIsOpen}/>
+        </div>
+      </MainWrapper>
     </div>
   );
 };
@@ -110,25 +113,25 @@ const Main = () => {
 const App: React.FC = () => {
   const [getAuth, { isLoading }] = useRefreshTokenMutation();
   const { setAuth } = useActions();
-  // useEffect(() => {
-  //   const isAuth = async () => {
-  //     try {
-  //       const { data } = await getAuth(Cookies.get("refresh"));
-  //       if (data) {
-  //         setAuth(true);
-  //         if (!localStorage.getItem('accessToken')) {
-  //           localStorage.setItem('accessToken', data.access)
-  //         }
-  //       } 
-  //     } catch (error) {
-  //       setAuth(false);
-  //       console.error("Failed to authenticate:", error);
-  //     }
-  //   };
-  //   isAuth()
-  // }, []);
-  // const auth = useSelector((state: state) => state.app.auth)
-  const auth =false
+  
+  useEffect(() => {
+    const isAuth = async () => {
+      try {
+        const { data } = await getAuth(Cookies.get("refresh"));
+        if (data) {
+          setAuth(true);
+          if (!localStorage.getItem('accessToken')) {
+            localStorage.setItem('accessToken', data.access)
+          }
+        } 
+      } catch (error) {
+        setAuth(false);
+        console.error("Failed to authenticate:", error);
+      }
+    };
+    isAuth()
+  }, []);
+  const auth = useSelector((state: state) => state.app.auth)
   return (
     <AppContainer>
       {isLoading ? (
@@ -146,6 +149,7 @@ const App: React.FC = () => {
         <Route path='/about' element ={<About/>}/>
         <Route path='/terms' element ={<Terms/>}/>
         <Route path='/support' element ={<Support/>}/>
+        <Route path='/price' element = {<Price/>} />
         <Route
           path='/'
           element={auth ? <LoginApp /> : <Main/>}

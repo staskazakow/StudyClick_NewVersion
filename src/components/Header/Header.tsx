@@ -54,10 +54,6 @@ const Button = styled.button`
   font-size: 16px;
   transition: background-color 0.3s;
 
-  &:hover {
-    background-color:rgb(252, 252, 252); // Цвет кнопки при наведении
-  }
-
   @media (max-width: 600px) {
     width: 100%; // Кнопки занимают 100% ширины на мобильных
     padding: 12px; // Увеличение отступов для мобильных
@@ -76,7 +72,6 @@ background:#B2CEE2;
 color:black;
 transition:0.3s;
 &:hover {
-   background-color:rgb(19, 19, 19);
     transform:scale(1.05) 
   }
 `
