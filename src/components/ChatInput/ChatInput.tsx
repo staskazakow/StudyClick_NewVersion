@@ -4,7 +4,7 @@ import screpka from "../../image/screpka.png";
 import helper from "../../image/helper.png";
 import micro from "../../image/microphon.png";
 import { NavLink } from 'react-router'; // Используем react-router-dom для NavLink
-
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 // --- (Импорты для Redux и API остаются без изменений) ---
 import { useActions } from '../../common/useActions';
 import { Message as MessageInterface } from '../../redux_toolkit/reducers/ChatSlice';
@@ -13,13 +13,13 @@ import { state } from '../../redux_toolkit/store';
 import Message from '../Message/Message';
 import { useCreateMessageNoLoginMutation, useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
 import { LoadingDots, MessagesItem } from '../LoginApp/LoginApp';
-
+import stop from "../../image/stop.png"
 // --- Styled Components с адаптивными стилями ---
 
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
-    max-height: 70vh; /* Занимает всю высоту viewport */
+    max-height: 80vh; /* Занимает всю высоту viewport */
     justify-content: flex-end; /* Контент прижат к низу */
     padding: 20px; /* Общие отступы */
     box-sizing: border-box; /* Учитываем паддинги в размерах */
@@ -118,8 +118,8 @@ export const Button = styled.button`
         height: 15px; /* Добавлена высота для img */
     }
 `;
-
-const Search = styled(Button)``;
+const Search = styled(Button)`
+`;
 
 export const FileInput = styled.input`
     display: none;
@@ -173,15 +173,13 @@ const HelperDropdown = styled.div<HelperDropdownProps>`
 
 const InputDecor = styled.div`
     margin-top: 10px;
-    width: mac-content;
-   
+    width: max-content;
     height: auto; /* Высота определяется контентом */
     padding: 8px; /* Немного уменьшен паддинг */
     border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap; /* Кнопки-инфо будут переноситься */
     gap: 8px;
     background: linear-gradient(180deg, rgba(210, 224, 239, 0.1), rgba(186, 221, 253, 0.5) 50%, rgba(154, 187, 227, 0.2) 100%);
     box-shadow: 0 2px 10px rgba(98, 153, 208, 0.5);
@@ -204,6 +202,7 @@ const InputDecor = styled.div`
     }
 
     @media (max-width: 768px) {
+    display:none;
         border-radius: 15px; /* Меньше скругление */
         padding: 6px; /* Ещё меньше паддинг */
         gap: 6px;
@@ -276,13 +275,19 @@ const ChatInput: React.FC = () => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { AddMessage } = useActions();
     const [isHelperOpen, setIsHelperOpen] = useState(false);
+    const [onSearch,setOnSearch] = useState(false)
     const { data } = useGetFieldsQuery();
     const [helperButtonText, setHelperButtonText] = useState("Помощник");
     const [createMessage, { isLoading: SendFetching }] = useCreateMessageNoLoginMutation();
     const messagesEndRef = useRef<HTMLDivElement>(null);
-
+    const {transcript} = useSpeechRecognition()
+    const [isRecording,setIsRecording] = useState(false)
+    const recognitionRef = useRef<any | null>(null);
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setInput(e.target.value);
+        if(transcript){
+            setInput(transcript + e.target.value);
+        }
+        setInput(e.target.value)
     };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -297,6 +302,62 @@ const ChatInput: React.FC = () => {
             fileInput.click();
         }
     };
+ useEffect(() => {
+  const SpeechRecognition =
+    (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ru-RU';
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognitionRef.current = recognition;
+
+    recognition.onresult = (event: any) => {
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const result = event.results[i];
+          if (result.isFinal) {
+            finalTranscript += result[0].transcript;
+          }
+        }
+      
+        if (finalTranscript) {
+          setInput(prev => prev + finalTranscript + ' ');
+        }
+      };
+
+    recognition.onerror = (event: any) => {
+      console.error('Ошибка распознавания речи:', event.error);
+      setIsRecording(false);
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+  } else {
+    console.warn('SpeechRecognition API не поддерживается в этом браузере.');
+  }
+}, []);
+
+const toggleRecording = () => {
+  if (!recognitionRef.current) {
+    alert('Ваш браузер не поддерживает распознавание речи');
+    return;
+  }
+
+  if (isRecording) {
+    recognitionRef.current.stop();
+    setIsRecording(false);
+  } else {
+    try {
+      recognitionRef.current.start();
+      setIsRecording(true);
+    } catch (e) {
+      console.error('Ошибка при запуске распознавания:', e);
+    }
+  }
+};
+
      useEffect(() => {
         if (textAreaRef.current) {
             textAreaRef.current.style.height = 'auto';
@@ -312,15 +373,18 @@ const ChatInput: React.FC = () => {
             formData.append("message", input);
             formData.append("study_field_id", localStorage.getItem("study_field_id") || "15");
             formData.append("chat_id", "0");
+            if (onSearch) {
+                formData.append("use_web","true")
+            }
             AddMessage({ message: input, role: "user" });
             setInput("");
             setFile(null);
-            
+            setOnSearch(false)
             try {
                 const res = await createMessage(formData).unwrap();
                 AddMessage({ message: res.response, role: "bot" });
             } catch (error) {
-                AddMessage({ message: "Произошла ошибка при отправке", role: "bot" });
+                AddMessage({ message: (error as any).data.error, role: "bot" });
             }
         }
     };
@@ -342,8 +406,9 @@ const ChatInput: React.FC = () => {
             messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
         }
     }, [message_data]);
-
-
+    const SearchQuerry = ( ) => {
+        setOnSearch(!onSearch)
+    }
     return (
         <PageContainer>
             <MessageWrapper ref={messagesEndRef}>
@@ -360,6 +425,7 @@ const ChatInput: React.FC = () => {
             <InputContainer>
                 <TextArea
                     ref={textAreaRef}
+                    // value={transcript ? transcript : input}
                     value={input}
                     onChange={handleChange}
                     placeholder="Спросите, я постараюсь помочь..."
@@ -392,8 +458,15 @@ const ChatInput: React.FC = () => {
                         </HelperDropdown>
                     </HelperButton>
                     <Button onClick={sendMessage}>Отправить</Button> {/* Заменил Search на Button, так как у них одинаковая стилизация и функционал */}
-                    <Search>Поиск</Search> {/* Вернул Search, так как вы его явно хотели */}
-                    <img src={micro} alt="Голос" style={{ width: "20px", height: "20px", cursor: "pointer" }} />
+                    {onSearch ?  
+                    <Search onClick={() => SearchQuerry()} style={{background:"#D1D871"}}>Поиск</Search> :
+                     <Search onClick={() => SearchQuerry()}>Поиск</Search>
+                    }
+                    {isRecording ? 
+                    <img src={stop} onClick={toggleRecording} alt="Голос" style={{background:"black", width: "20px", height: "20px", cursor: "pointer" }} />
+                    :
+                    <img src={micro} onClick={toggleRecording} alt="Голос" style={{ width: "20px", height: "20px", cursor: "pointer" }} />
+                }
                 </BtnWrapper>
             </InputContainer>
 
