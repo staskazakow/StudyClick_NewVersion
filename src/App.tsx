@@ -95,7 +95,7 @@ const Main = () => {
       setIsOpen(true);
     }, 10000);
     return () => clearTimeout(timer);
-  }, []); // пустой массив зависимостей — только при МОНТАЖ
+  }, []); // пустой массив зависимостей — только при МОНТАЖе
   return (
     <div style={{ height: "100vh" }}>
       <MainWrapper>
@@ -113,7 +113,6 @@ const Main = () => {
 const App: React.FC = () => {
   const [getAuth, { isLoading }] = useRefreshTokenMutation();
   const { setAuth } = useActions();
-  
   useEffect(() => {
     const isAuth = async () => {
       try {

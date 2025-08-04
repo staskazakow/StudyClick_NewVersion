@@ -41,7 +41,6 @@ const ItemTitle = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 8px;
   padding: 4px 0; /* Align with input padding */
 `;
 
