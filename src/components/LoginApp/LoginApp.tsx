@@ -264,8 +264,8 @@ import { Button, field } from '../../common/styles/chatInput.styles';
                     <NavLink style={{ textDecoration: "none" }} to={"/tarif"}>
                       <PlanUpped>Улучшить план</PlanUpped>
                     </NavLink>
-                    <NavLink to={"/profile"} style={{ cursor: "pointer" }}>
-                      <img src={user} alt="User" style={{ width: '24px', height: '24px', display: 'block' }} />
+                    <NavLink to={"/profile"} style={{ cursor: "pointer" ,backgroundColor:"#13233D",borderRadius:"30px"}}>
+                      <img src={user} alt="User" style={{ width: '29px', height: '29px', display: 'block',padding:"4px" }} />
                     </NavLink>
                     {!isMobile && (
                       <CollapseButton

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect, useRef } from 'react';
 import screpka from "../../image/screpka.png";
 import helper from "../../image/helper.png";
 import micro from "../../image/microphon.png";
@@ -14,11 +13,8 @@ import Message from '../Message/Message';
 import { useCreateMessageNoLoginMutation, useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
 import { LoadingDots} from '../LoginApp/LoginApp';
 import stop from "../../image/stop.png"
-import { MessagesItem, MessageWrapper } from '../../common/styles/chat.styles';
-import { BtnWrapper, Button, field, FileInput, FooterChatInput, HelperButton, HelperDropdown, Info, InputContainer, InputDecor, PageContainer, Search, TextArea } from '../../common/styles/chatInput.styles';
-import Footer from '../Footer/Footer';
-// --- Styled Components с адаптивными стилями ---
-
+import { MessagesItem } from '../../common/styles/chat.styles';
+import { BtnWrapper,MessageWrapper, Button, field, FileInput, FooterChatInput, HelperButton, HelperDropdown, Info, InputContainer, InputDecor, PageContainer, Search, TextArea } from '../../common/styles/chatInput.styles';
 
 
 // --- Компонент React ---

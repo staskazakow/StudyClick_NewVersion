@@ -37,8 +37,7 @@ const Profile = () => {
                         {/* Access subscription name with optional chaining */}
                         <SettingsButtonPass>{userInfo?.subscription?.name || "Нет подписки"}</SettingsButtonPass>
                         <SettingsButton><NavLink to={"/settings"}>Настройки</NavLink></SettingsButton>
-                        <SettingsButton>Написать в поддержку</SettingsButton>
-                        <SettingsButton>Новости</SettingsButton>
+                        <SettingsButton><a href="https://t.me/mon_tti1  ">Написать в поддержку</a></SettingsButton>
                         <SettingsButton onClick={HandleLogout}>Выйти</SettingsButton>
                     </ProfileWrapper>
                 </ContentContainer>

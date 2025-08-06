@@ -3,11 +3,10 @@ import {
     FetchArgs,
     createApi,
     fetchBaseQuery,
-} from '@reduxjs/toolkit/query/react'; // fetchBaseQuery может быть неявно доступен
+} from '@reduxjs/toolkit/query/react'; 
 
 import Cookies from 'js-cookie';
 
-// Базовый URL вашего API
 const baseUrl = 'http://87.228.83.230:8000/api/';
 
 export const baseQuery = fetchBaseQuery({

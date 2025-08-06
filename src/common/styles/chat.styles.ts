@@ -63,18 +63,7 @@ export const ChatWindow = styled.div<StyledProps>`
   padding-top:${({ isOpen }) => isOpen ? "" : "20px"};
   /* Плавный переход для всех анимируемых свойств */
   transition: max-width 0.35s ease-in-out, max-height 0.35s ease-in-out, padding 0.35s ease-in-out, opacity 0.3s ease-in-out;
-  &::-webkit-scrollbar {
-    width: 12px; /* Ширина полосы прокрутки */
-  }
-
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Цвет фона дорожки */
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #888; /* Цвет бегунка */
-    border-radius: 6px; /* Закругление углов бегунка */
-  }
+ 
   /* Стили для больших экранов (Desktop) */
   @media(min-width: 1001px) {
     height: 93vh;
@@ -168,6 +157,18 @@ export const ChatWindow = styled.div<StyledProps>`
     @media (max-width: ${breakpoints.mobile}) {
       // padding: 15px;
     }
+       &::-webkit-scrollbar {
+    width: 12px; /* Ширина полосы прокрутки */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Цвет фона дорожки */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #13233D; /* Цвет бегунка */
+    border-radius: 6px; /* Закругление углов бегунка */
+  }
     & > div {
       // padding: 10px;
       margin-bottom: 10px;
@@ -313,13 +314,15 @@ export const ChatWindow = styled.div<StyledProps>`
   `;
 
  export const FieldsBtn = styled.div`
-    padding: 3px 10px;
-    background: #D9D9D9;
+    padding: 8px 40px;
+    background: #13233D;
     border-radius: 30px;
-    font-family: Inter, sans-serif;
-    line-height: 1.2;
+    font-family:Montserrat Alternates;
+    font-weight:400;
+    line-height: 100%;
+    font-size:15px;
     letter-spacing: 0%;
-    color: black;
+    color: #ECECE5;
     cursor: pointer;
     flex-shrink: 0;
     text-align: center;
@@ -331,13 +334,25 @@ export const ChatWindow = styled.div<StyledProps>`
   `;
 
  export const PlanUpped = styled.div`
-    padding: 4px 10px;
+    padding: 11px 18px;
     background-color: #13233D;
     border-radius: 30px;
     color: white;
     flex-shrink: 0;
     text-align: center;
     font-size: 0.9em;
+    font-family: Montserrat Alternates;
+font-weight: 400;
+font-style: Regular;
+font-size: 15px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+transition:all 0.2s;
+  &:hover{
+
+  background-color:#3A4F99;
+  }
   `;
 
  export const Messages = styled.div`
@@ -472,7 +487,7 @@ export  const Dot = styled.span`
 
 export  const MessageWrapper = styled.div`
   display:flex;
-  flex-direction:row;
+  flex-direction:row  ;
   @media(max-width:1000px){
     flex-direction:column;
   }
