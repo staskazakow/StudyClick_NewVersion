@@ -44,30 +44,25 @@ export const baseQueryWithReauth: BaseQueryFn<
                 );
 
                 if (refreshResult?.data?.access) {
-                    console.log('New accessToken');
                     // Обновление токена успешно, сохраняем новый access токен
                     localStorage.setItem('accessToken', refreshResult.data.access);
                     // Повторяем исходный запрос с новым access токеном
                     result = await baseQuery(args, api, extraOptions);
                 } else {
                      // Обновление токена не удалось
-                     console.log('Refresh failed, redirecting');
                      localStorage.removeItem('accessToken');
                      Cookies.remove("refresh"); // Удаляем refresh куку
                      window.location.href = '/login'; // Перенаправление
                 }
             } catch (refreshError) {
-                console.error('Ошибка при обновлении токена (в baseQueryWithReauth):', refreshError);
                  // Ошибка при выполнении самого запроса на обновление токена
                  localStorage.removeItem('accessToken');
                  Cookies.remove("refresh");
                  window.location.href = '/login'; // Перенаправление
             }
         } else {
-             console.log('No refresh token found, redirecting to login');
              // Нет refresh токена
              localStorage.removeItem('accessToken');
-            //  window.location.href = '/login'; // Перенаправление
         }
     }
 
@@ -162,9 +157,6 @@ export const authApi = createApi({
                  method: 'POST',
                  body: { refresh: refresh_token }, // Отправляем refresh токен в теле
             }),
-            // **** ЭТА СТРОКА ВЫЗЫВАЕТ ОШИБКУ СИНТАКСИСА ****
-            // baseQuery: baseQuery, // Это была ошибка синтаксиса
-            // **** КОНЕЦ ОШИБКИ СИНТАКСИСА ****
 
              async onQueryStarted(args, { dispatch, queryFulfilled }) {
                  try {

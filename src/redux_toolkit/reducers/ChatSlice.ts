@@ -6,7 +6,7 @@ let initialState: state = {
                 id: 0,
                 messages: [],
                 study_field: 0,
-                title: "New chat"
+                title: "Новый чат"
             },],
     current_chat: [],
     field_name: "Помощник",
@@ -70,7 +70,7 @@ const ChatSlice = createSlice({
                 id: 0,
                 messages: [],
                 study_field: 52,
-                title: "New chat"
+                title: "Новый чат"
             })
         },
         RenameChat(state,{payload}){

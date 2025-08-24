@@ -6,7 +6,7 @@ export const chatApi = authApi.injectEndpoints({
             query:(credentials) => ({
                 url:'chat/',
                 body:credentials,
-                method:"POST"
+                method:"POST",
             })
         }),
         getChats: builder.query({
@@ -24,7 +24,10 @@ export const chatApi = authApi.injectEndpoints({
                 url:`chat/delete?id=${credentials.id}`,
                 method:"DELETE"
             })
+        }),
+        getTokens:builder.query({
+            query: () => "user/tokens/"
         })
     })
 })
-export const {useCreateMessageMutation,useGetChatsQuery,useChangeNameChatMutation,useDeleteChatMutation} = chatApi
+export const {useCreateMessageMutation,useGetChatsQuery,useChangeNameChatMutation,useDeleteChatMutation,useGetTokensQuery} = chatApi

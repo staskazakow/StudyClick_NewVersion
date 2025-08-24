@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BackArrow from '../../image/BackArrow.png';
+import BackArrow from '../../image/RightArrow.svg';
 import styled from 'styled-components';
 import { NavLink } from 'react-router'; 
 import { useLoginMutation } from '../../redux_toolkit/api/authApi';
@@ -158,7 +158,7 @@ const Login = () => {
     return (
         <Wrapper>
             <BackLinkWrapper to={'/'}> {/* Use styled BackLinkWrapper */}
-                <img src={BackArrow} alt="Back" />
+                <img src={BackArrow} alt="Back" style={{transform:"rotate(180deg)"}} />
             </BackLinkWrapper>
             <LoginForm onSubmit={handleSubmit}> 
                 <Title>Войдите</Title> 

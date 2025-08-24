@@ -24,6 +24,7 @@ import Modal from './components/Modal/Modal';
 
 const AppContainer = styled.div`
 overflow-x:hidden;
+  overflow-y:hidden;
   font-weight:400;
   margin:0;
   background: #13233D;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BackArrow from '../../image/BackArrow.png';
+import BackArrow from '../../image/RightArrow.svg';
 import styled from 'styled-components';
 import { NavLink } from 'react-router'; // Use react-router-dom for web applications <sup data-citation="3" className="inline select-none [&>a]:rounded-2xl [&>a]:border [&>a]:px-1.5 [&>a]:py-0.5 [&>a]:transition-colors shadow [&>a]:bg-ds-bg-subtle [&>a]:text-xs [&>svg]:w-4 [&>svg]:h-4 relative -top-[2px] citation-shimmer"><a href="https://dev.to/holasoymalva/why-i-decided-to-stop-working-with-reactjs-in-2025-4d1l" target="_blank" title="Why I Decided to Stop Working with React.js in 2025">3</a></sup>
 import { useGetJWTMutation, useRegisterMutation } from '../../redux_toolkit/api/authApi';
@@ -171,7 +171,7 @@ const Registration = () => {
     return (
         <Wrapper>
             <BackLinkWrapper to="/"> {/* Use the styled NavLink here */}
-                <img src={BackArrow} alt="Back" />
+                <img src={BackArrow} alt="Back" style={{transform:"rotate(180deg)"}}/>
             </BackLinkWrapper>
             <RegForm onSubmit={handleSubmit}>
                 <Title>Регистрация</Title> {/* Changed title text */}

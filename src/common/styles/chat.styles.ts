@@ -46,7 +46,6 @@ export const breakpoints = {
    align-items:center;
    gap:25px;
    @media(max-width:1000px){
-    
    flex-direction:row;
    align-items:center;
    }
@@ -60,18 +59,19 @@ export const ChatWindow = styled.div<StyledProps>`
   display: flex;
   flex-direction: column;
   z-index: 10000;
+  width:250px;
   padding-top:${({ isOpen }) => isOpen ? "" : "20px"};
   /* Плавный переход для всех анимируемых свойств */
   transition: max-width 0.35s ease-in-out, max-height 0.35s ease-in-out, padding 0.35s ease-in-out, opacity 0.3s ease-in-out;
  
   /* Стили для больших экранов (Desktop) */
   @media(min-width: 1001px) {
-    height: 93vh;
+    height: ${({ isOpen }) => isOpen ? "93vh" : "91vh"};
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     
     /* Анимация ширины через max-width */
-    max-width: ${({ isOpen }) => isOpen ? "200px" : "50px"};
+    max-width: ${({ isOpen }) => isOpen ? "300px" : "50px"};
   
   }
 
@@ -79,10 +79,10 @@ export const ChatWindow = styled.div<StyledProps>`
   @media (max-width: 1000px) {
     width: 100%; /* На мобильных устройствах компонент всегда пытается занять всю ширину */
     border-radius: 10px;
-    overflow-y:auto;
+    overflow-y:hidden;
     padding:0;
     /* Анимация высоты через max-height. Значение должно быть больше ожидаемой высоты контента */
-    max-height: ${({ isOpen }) => isOpen ? "18vh" : "5vh"}; 
+    max-height: ${({ isOpen }) => isOpen ? "18vh" : "6vh"}; 
   }
 `;
 
@@ -143,7 +143,7 @@ export const ChatWindow = styled.div<StyledProps>`
     img {
       width: 20px;
       height: 20px;
-      transform: ${({ isCollapsed }) => isCollapsed ? 'rotate(0)' : 'rotate(180deg)'};
+      transform: ${({ isOpen }) => isOpen ? 'rotate(180deg)' : 'rotate(0)'};
       transition: transform 0.3s ease;
     }
   `;
@@ -154,8 +154,10 @@ export const ChatWindow = styled.div<StyledProps>`
     padding: 2px;
     overflow-y: auto;
     overflow-x:hidden;
+    height:80vh;
     @media (max-width: ${breakpoints.mobile}) {
       // padding: 15px;
+      height:17vh;
     }
        &::-webkit-scrollbar {
     width: 12px; /* Ширина полосы прокрутки */
@@ -181,10 +183,31 @@ export const ChatWindow = styled.div<StyledProps>`
       }
     }
   `;
-
+  export const TokenBlock = styled.div`
+  box-shadow: 0px 0px 4px 0px #13233D;
+  height:7vh;
+  display:flex;
+  justify-content: flex-start;
+  gap:11px;
+  >img{
+    margin-top:13px;
+    margin-left:23px;
+    width:20px;
+    height:20px;
+    padding:7px;
+    background-color:#13233D;
+    border-radius:50%;
+    cursor:pointer;
+  }
+  >div{
+  display:flex;
+  align-items: center;
+  margin-bottom:3px;
+  }
+  `
  export const DialogWindow = styled.div<StyledProps>`
     flex-grow: 1;
-    height:95%;
+    height:93vh;
     background-color: #ECECE5;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
@@ -259,10 +282,6 @@ export const ChatWindow = styled.div<StyledProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color:rgb(65 65 65); // Цвет кнопки при наведении
-    &:hover {
-  background-color:rgb(17, 9, 9); // Цвет кнопки при наведении
-  }
     img {
       display: block;
     }
@@ -439,7 +458,7 @@ export  const AssistantsList = styled.ul`
     /* Default for user messages */
     align-self: flex-end;
     &.assistant {
-      background-color: #B2CEE2;
+      // background-color: #B2CEE2;
       align-self: flex-start;
     }
     @media (max-width: ${breakpoints.mobile}) {
@@ -486,6 +505,7 @@ export  const Dot = styled.span`
   `;
 
 export  const MessageWrapper = styled.div`
+
   display:flex;
   flex-direction:row  ;
   @media(max-width:1000px){
