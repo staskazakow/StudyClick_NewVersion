@@ -5,15 +5,15 @@ import { useActions } from '../../common/useActions';
 import { useSelector } from 'react-redux';
 import { state } from '../../redux_toolkit/store';
 import { Chat, Message } from '../../redux_toolkit/reducers/ChatSlice';
-import { useGetFieldsQuery } from '../../redux_toolkit/api/fieldsAli';
-import { NavLink } from 'react-router';
+import { useGetFieldsQuery, useGetPromptQuery } from '../../redux_toolkit/api/fieldsAli';
+import { data, NavLink } from 'react-router';
 import RightArrow from "../../image/RightArrow.svg"
 import { useCreateMessageMutation, useGetChatsQuery, useGetTokensQuery } from '../../redux_toolkit/api/chatsApi';
 import DialogItem from '../Dialog/Dialog';
 import { LoadingOverlay, LoadingSpinner } from '../../App';
 import screpka from "../../image/screpka.png"
 import logo from "../../image/LogoIn.png"
-import { ArrowLeft, Asisstant, AssistantsList, breakpoints, Chats, ChatWindow, CollapseButton, Dialog, DialogWindow, Dot, FieldsBtn, HeaderBlock, InputBlock, LoadingDotsContainer, LogoCont, MessageBlock, Messages, MessagesItem, MessageWrapper, MobileSidebar, NavBlock, PlanUpped, Prompt, StyledButtonChat, StyledFileInput, TokenBlock, Wrapper } from '../../common/styles/chat.styles';
+import { ArrowLeft, Asisstant, AssistantsList, breakpoints, Chats, ChatWindow, CollapseButton, Dialog, DialogWindow, Dot, FieldsBtn, HeaderBlock, InputBlock, LoadingDotsContainer, LogoCont, MessageBlock, Messages, MessagesItem, MessageWrapper, MobileSidebar, NavBlock, PlanUpped, Prompt, PromptItem, PromptsWrapper, StyledButtonChat, StyledFileInput, TokenBlock, ToogleButton, Wrapper } from '../../common/styles/chat.styles';
 import { Button, field } from '../../common/styles/chatInput.styles';
 import { Tooltip } from '../Tooltip/Tooltip';
 import plus from "../../image/Plus.png"
@@ -45,9 +45,11 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [fieldName, setFieldName] = useState("")
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true)
+  const [isTooglePrompt,setIsTooglePrompt] = useState(false)
   const [file, setFile] = useState<File | null>(null); // Initialize with null
   const [OnSearch, setOnSearch] = useState(false)
   const {data:tokens,refetch:getToken} = useGetTokensQuery(0)
+  const {data:prompts,refetch:getPrompt} = useGetPromptQuery(localStorage.getItem("study_field_id"))
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
@@ -84,9 +86,10 @@ const LoginApp: React.FC<LoginAppProps> = () => {
     }
   }, [messagesFromStore]); // Зависимости: массив сообщений
 
-  const sendMessage = async () => {
-    if (message.trim() !== "" || file) {
-      PushMessage({ message: message, role: "user" })
+  const sendMessage = async (messageText?: string) => {
+    const currentMessage = messageText ? messageText : message;
+    if (currentMessage.trim() !== "" || file) {
+      PushMessage({ message: currentMessage, role: "user" })
       try {
         const studyFieldId = localStorage.getItem("study_field_id");
         const chatId = localStorage.getItem("chat_id");
@@ -97,7 +100,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
         if (OnSearch) {
           formData.append("use_web", "true")
         }
-        formData.append("message", message)
+        formData.append("message", currentMessage)
         formData.append("study_field_id", studyFieldId ? studyFieldId : '52')
         formData.append("chat_id", chatId ? chatId : '0')
         const res: ErrorRes = await createMessage(
@@ -170,6 +173,10 @@ const LoginApp: React.FC<LoginAppProps> = () => {
       }
     }
   };
+  const sendPromptMessage =  (e:PromptItem) => {
+    setMessage(e.example)
+    sendMessage(e.example)
+  }
   // Этот useEffect будет следить за изменениями currentChatObj
   useEffect(() => {
     // Функция SetField будет вызвана только ПОСЛЕ того,
@@ -213,8 +220,8 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   }
   const ToogleLeftSidebarOpen = () => {
     setIsLeftSidebarOpen(!isLeftSidebarOpen)
-    console.log(isLeftSidebarOpen)
   }
+
   return (
     <Wrapper>
       {isLoading ?
@@ -227,7 +234,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               {isLeftSidebarOpen ? <NavBlock>
                 <Tooltip text="Новый чат" position='bottom'>
                   <StyledButtonChat onClick={() => AddChatLogin(0)}>
-                    <img src={ChatBtn} alt="Chat" />
+                    <img style={{width:"30px",height:"30px"}} src={ChatBtn} alt="Chat" />
                   </StyledButtonChat>
                 </Tooltip>
                 <LogoCont>
@@ -253,14 +260,14 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     </a>
                   </LogoCont>
                   <StyledButtonChat onClick={() => AddChatLogin(0)}>
-                    <img src={ChatBtn} alt="Chat" />
+                    <img src={ChatBtn} style={{width:"30px",height:"30px"}} alt="Chat" />
                   </StyledButtonChat>
                   {isMobile ? <TokenBlock style={{boxShadow:"none",height:"max-content"}}>
                 <img src={plus} style={{marginBottom:"13px"}}/>
                 <div>{tokens ? tokens.available_tokens : ""} токенов</div>
               </TokenBlock>  : ""}
                 </MobileSidebar>}
-              {isSidebarOpen ?<div>
+              {isSidebarOpen ?<>
               <Chats>
                 {chatsFromStore && chatsFromStore.map((e: Chat) => (
                   <DialogItem key={e.id} element={e} handle={HandleChat} /> // Added key prop
@@ -273,7 +280,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                 <div>{tokens ? tokens.available_tokens : ""} токенов</div>
               </TokenBlock>
               }
-              </div> 
+              </> 
                : ""}
 
             </ChatWindow>
@@ -289,6 +296,9 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                   )}
                   {!isMobile && <FieldsBtn>{fieldName || 'Сфера обучения'}</FieldsBtn>}
                   <div style={{ display: "flex", gap: "10px", alignItems: "center", marginLeft: !isMobile && isSidebarOpen ? "auto" : "0" }}>
+                    <NavLink style={{textDecoration:"none"}} to={"/tarif"}>
+                    <PlanUpped>Улучшить план</PlanUpped>
+                    </NavLink>
                     <Tooltip text="Профиль" position='bottom'>
                       <NavLink to={"/profile"} style={{ cursor: "pointer", backgroundColor: "#13233D", borderRadius: "30px" }}>
                         <img src={user} alt="User" style={{ width: '29px', height: '29px', display: 'block', padding: "4px" }} />
@@ -379,17 +389,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                 <Prompt isCollapsed={isPromptCollapsed}>
                   {!isPromptCollapsed && (
                     <>
-                      <button onClick={toggleAssistants} style={{
-                        background: '#13233D',
-                        color: 'white',
-                        padding: '10px 15px',
-                        borderRadius: '20px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        transition: 'background-color 0.2s ease',
-                        textAlign: 'center'
-                      }} >{showAssistants ? 'Скрыть ассистентов' : 'Показать ассистентов'}</button>
+                      <ToogleButton onClick={toggleAssistants}  >{showAssistants ? 'Скрыть ассистентов' : 'Показать ассистентов'}</ToogleButton>
                       {showAssistants && (
                         <AssistantsList>
                           {fieldsApiData && fieldsApiData.map((e: field) => (
@@ -404,6 +404,26 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                           ))}
                         </AssistantsList>
                       )}
+                      {
+                        isMobile ? "" : <PromptsWrapper>
+                          <ToogleButton onClick={() => setIsTooglePrompt(!isTooglePrompt)}>Показать примеры запросов</ToogleButton>
+                        {
+                        prompts ?
+                        isTooglePrompt ?
+                        <AssistantsList>
+                          {prompts && prompts.map((e: PromptItem) => (
+                            <Asisstant
+                              key={e.id}
+                              onClick={() => sendPromptMessage(e)}
+                            >
+                              {e.example}
+                            </Asisstant>
+                          ))}
+                        </AssistantsList>
+                         : "" : ""}
+                      </PromptsWrapper>
+                      }
+                     
                     </>
                   )}
                 </Prompt>

@@ -8,11 +8,13 @@ import { NavLink } from "react-router";
 
 const LogoBlock = styled.div`
   display: flex;
-  gap: 15vw;
+  flex-direction:column;
+  max-width:35vw;
   justify-content: center;
   /* Адаптив для мобильных устройств */
   @media (max-width: 900px) {
-    flex-direction: column;
+    flex-direction: row;
+    max-width:100%;
     align-items: center;
     gap: 20px;
   }
@@ -131,7 +133,16 @@ const BtnWrapper = styled.div`
    text-align:center; 
  }
 `;
-
+const NetworkWrapper = styled.div`
+  display:flex;
+  flex-direction:row;
+justify-content:space-between;
+  gap:300px;
+  @media(max-width:1000px){
+   flex-direction:column;
+   gap:10px;
+ }
+`
 const Footer = () => {
  const LinkTg = () => {
    window.location.href = "https://t.me/mon_tti1";
@@ -141,9 +152,10 @@ const Footer = () => {
  };
  return (
    <Wrapper>
+    <NetworkWrapper>
      <LogoBlock className="logoblock">
        <div className="logo-container" style={{ display:"flex", alignItems:"center" }}>
-         <img src={logo} alt="logo" style={{ width:"60px", height:"auto" }} />
+         <img src={logo} alt="logo" style={{ width:"90px", height:"auto" }} />
          <div style={{ fontSize:"26px", marginLeft:"10px" }}>Guiding Star</div>
        </div>
        <p style={{ color:"black", fontWeight:"700" }}>ИП Артеев Максим Николаевич</p>
@@ -163,8 +175,10 @@ const Footer = () => {
        </div>
      </div>
 
+    </NetworkWrapper>
+
      {/* Основные разделы */}
-     <div style={{ display:"flex", gap:"35px", justifyContent:"space-evenly", flexWrap:"wrap", marginTop:"40px" }} className="footer-main">
+     <div style={{ display:"flex", gap:"35px", justifyContent:"space-around", flexWrap:"wrap", marginTop:"40px" }} className="footer-main">
        {/* Поддержка */}
        <div style={{ minWidth:'200px' }}>
          <h4>Поддержка</h4>

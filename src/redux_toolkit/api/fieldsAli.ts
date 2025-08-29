@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; // Импортируйте из react
+import { PromptItem } from "../../common/styles/chat.styles";
 
 const baseUrl = 'http://87.228.83.230:8000/api/'
 const baseQuery = fetchBaseQuery({
@@ -25,9 +26,12 @@ export const fieldsApi = createApi({
                 body:message,
                 method:"POST",
             })
+        }),
+        getPrompt: builder.query<PromptItem[],any>({
+            query: (id) => `study-field/questions?field_id=${id}`
         })
     }),
 });
 
 // Экспортируем хук для использования в компонентах
-export const { useGetFieldsQuery,useCreateMessageNoLoginMutation } = fieldsApi;
+export const { useGetFieldsQuery,useCreateMessageNoLoginMutation,useGetPromptQuery } = fieldsApi;

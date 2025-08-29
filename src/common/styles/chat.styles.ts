@@ -1,17 +1,17 @@
 import styled, { keyframes } from "styled-components";
-import { ButtonChat } from "../../components/Header/Header";
+import { Button } from "./chatInput.styles";
 
 export const breakpoints = {
-    mobile: '1000px',
-    tablet: '1024px',
-  };
+  mobile: '1000px',
+  tablet: '1024px',
+};
 
-  interface StyledProps {
-    isCollapsed?: boolean;
-    isOpen?: boolean;
-  }
+interface StyledProps {
+  isCollapsed?: boolean;
+  isOpen?: boolean;
+}
 
-  export const Wrapper = styled.div`
+export const Wrapper = styled.div`
     overflow-y:hidden;
     display: flex;
     height: 100vh;
@@ -20,7 +20,6 @@ export const breakpoints = {
     flex-direction: column;
     position: relative;
     transition: all 0.3s ease;
-    padding: 10px;
     box-sizing: border-box;
     @media (max-width: ${breakpoints.mobile}) {
       flex-direction: column;
@@ -30,7 +29,7 @@ export const breakpoints = {
       gap: 10px;
     }
   `;
- export const StyledFileInput = styled.input`
+export const StyledFileInput = styled.input`
     /* Make the file input invisible but still interactable */
     opacity: 0;
     position: absolute;
@@ -40,7 +39,7 @@ export const breakpoints = {
     overflow: hidden;
     pointer-events: none; /* Prevent it from interfering with other elements */
   `;
- export const MobileSidebar = styled.div`
+export const MobileSidebar = styled.div`
    display:flex;
    flex-direction:column;
    align-items:center;
@@ -48,6 +47,7 @@ export const breakpoints = {
    @media(max-width:1000px){
    flex-direction:row;
    align-items:center;
+  //  padding-bottom:105px;
    }
   `
 export const ChatWindow = styled.div<StyledProps>`
@@ -67,8 +67,7 @@ export const ChatWindow = styled.div<StyledProps>`
   /* Стили для больших экранов (Desktop) */
   @media(min-width: 1001px) {
     height: ${({ isOpen }) => isOpen ? "93vh" : "91vh"};
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
+    height: 100vh;
     
     /* Анимация ширины через max-width */
     max-width: ${({ isOpen }) => isOpen ? "300px" : "50px"};
@@ -82,11 +81,11 @@ export const ChatWindow = styled.div<StyledProps>`
     overflow-y:hidden;
     padding:0;
     /* Анимация высоты через max-height. Значение должно быть больше ожидаемой высоты контента */
-    max-height: ${({ isOpen }) => isOpen ? "18vh" : "6vh"}; 
+    max-height: ${({ isOpen }) => isOpen ? "20vh" : "8vh"}; 
   }
 `;
 
- export  const CollapseButton = styled.button<StyledProps>`
+export const CollapseButton = styled.button<StyledProps>`
     width: 24px;
     height: 24px;
     color: white;
@@ -111,7 +110,7 @@ export const ChatWindow = styled.div<StyledProps>`
     }
   `;
 
- export const NavBlock = styled.div`
+export const NavBlock = styled.div`
     display: flex;
     gap:10px;
     align-items: center;
@@ -122,7 +121,7 @@ export const ChatWindow = styled.div<StyledProps>`
   `;
 
 
-  export const ArrowLeft = styled.div<StyledProps>`
+export const ArrowLeft = styled.div<StyledProps>`
     cursor: pointer;
     padding: 5px;
     transition: opacity 0.2s;
@@ -148,7 +147,7 @@ export const ChatWindow = styled.div<StyledProps>`
     }
   `;
 
- export const Chats = styled.div`
+export const Chats = styled.div`
     flex-grow: 1;
     color: #333;
     padding: 2px;
@@ -183,7 +182,7 @@ export const ChatWindow = styled.div<StyledProps>`
       }
     }
   `;
-  export const TokenBlock = styled.div`
+export const TokenBlock = styled.div`
   box-shadow: 0px 0px 4px 0px #13233D;
   height:7vh;
   display:flex;
@@ -205,12 +204,10 @@ export const ChatWindow = styled.div<StyledProps>`
   margin-bottom:3px;
   }
   `
- export const DialogWindow = styled.div<StyledProps>`
+export const DialogWindow = styled.div<StyledProps>`
     flex-grow: 1;
-    height:93vh;
+    height:100vh;
     background-color: #ECECE5;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
     display: flex;
     flex-direction: row;
     position: relative;
@@ -226,27 +223,25 @@ export const ChatWindow = styled.div<StyledProps>`
     }
   `;
 
- export const   Dialog = styled.div<StyledProps>`
+export const Dialog = styled.div<StyledProps>`
     display: flex;
     flex-direction: column;
     padding: 20px;
     flex-grow: 1;
     overflow-y: auto;
-    
+    background-color:white;
     position: relative;
     @media (max-width: 1000px) {
       border-right: none
       padding: 15px;
       flex-grow: 1;
       min-height: 40vh;
-      width: 100%;
+      // width: 100%;
       overflow-y: auto;
     }
   `;
 
- export const Prompt = styled.div<StyledProps>`
-  border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
+export const Prompt = styled.div<StyledProps>`
     position: relative;
     display: flex;
     box-shadow: 1px 0px 10px 0px #13233D;
@@ -274,8 +269,20 @@ export const ChatWindow = styled.div<StyledProps>`
       overflow-y: auto;
     }
   `;
-
- export const StyledButtonChat = styled(ButtonChat)`
+export const ButtonChat = styled(Button)`
+padding:1px 6px 1px 6px;
+ transition: background-color 0.3s;
+&:hover {
+ background-color:rgb(179, 179, 179); // Цвет кнопки при наведении
+}
+`
+export const StyledButtonChat = styled(ButtonChat)`
+ background-color: transparent; // Цвет кнопок
+  color: #2b2d42;
+  border: none;
+  border-radius: 20px;
+  font-weight:400;
+  padding: 10px 15px;
     border: none;
     cursor: pointer;
     padding: 0;
@@ -290,7 +297,7 @@ export const ChatWindow = styled.div<StyledProps>`
     }
   `;
 
- export const MessageBlock = styled.div`
+export const MessageBlock = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -303,7 +310,7 @@ export const ChatWindow = styled.div<StyledProps>`
     }
   `;
 
- export const InputBlock = styled.input`
+export const InputBlock = styled.input`
     border-radius: 30px;
     border: none;
     padding: 10px 20px;
@@ -318,11 +325,13 @@ export const ChatWindow = styled.div<StyledProps>`
     }
   `;
 
- export const HeaderBlock = styled.div`
+export const HeaderBlock = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    box-shadow: 0 5px 5px -5px #888888;
+    padding-bottom:2px;
     @media (max-width: 1000px) {
       flex-direction: column;
       align-items: stretch;
@@ -332,7 +341,7 @@ export const ChatWindow = styled.div<StyledProps>`
     }
   `;
 
- export const FieldsBtn = styled.div`
+export const FieldsBtn = styled.div`
     padding: 8px 40px;
     background: #13233D;
     border-radius: 30px;
@@ -352,7 +361,7 @@ export const ChatWindow = styled.div<StyledProps>`
     }
   `;
 
- export const PlanUpped = styled.div`
+export const PlanUpped = styled.div`
     padding: 11px 18px;
     background-color: #13233D;
     border-radius: 30px;
@@ -369,12 +378,11 @@ line-height: 100%;
 letter-spacing: 0%;
 transition:all 0.2s;
   &:hover{
-
   background-color:#3A4F99;
   }
   `;
 
- export const Messages = styled.div`
+export const Messages = styled.div`
     overflow-y: auto;
     flex-grow: 1;
     margin-bottom: 10px;
@@ -400,7 +408,7 @@ transition:all 0.2s;
     }
   `;
 
-export  const AssistantsList = styled.ul`
+export const AssistantsList = styled.ul`
     display: flex;
     flex-direction: column;
     list-style: none;
@@ -412,15 +420,15 @@ export  const AssistantsList = styled.ul`
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     overflow-y: auto;
-    max-height: 50vh;
+    max-height: 35vh;
     width:15vw;
     @media (max-width: ${breakpoints.mobile}) {
-      max-height: 20vh;
+      height: 20vh;
       width:90%;
     }
   `;
 
- export const LogoCont = styled.div`
+export const LogoCont = styled.div`
   display:flex;
   align-items:center;
     img{
@@ -428,8 +436,29 @@ export  const AssistantsList = styled.ul`
       height:35px;
     }
   `
+export const ToogleButton = styled.button`
+  background: #13233D;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  textAlign: center;
+`
+export const PromptsWrapper = styled.div`
+display:flex;
+flex-direction:column;
+margin-top:6px;
 
- export const Asisstant = styled.li`
+`
+export interface PromptItem {
+  example: string,
+  field:number,
+  id:number
+}
+export const Asisstant = styled.li`
     color: black;
     padding: 8px 12px;
     background: #13233D33;
@@ -446,7 +475,7 @@ export  const AssistantsList = styled.ul`
     }
   `;
 
-  export const MessagesItem = styled.div`
+export const MessagesItem = styled.div`
     padding: 8px 12px;
     border-radius: 15px;
     margin-bottom: 10px;
@@ -467,14 +496,14 @@ export  const AssistantsList = styled.ul`
     }
   `;
 
- 
 
-export  const LoadingDotsContainer = styled.div`
+
+export const LoadingDotsContainer = styled.div`
     display: flex;
     align-items: center;
   `;
 
- export const loadingDotsAnimation = keyframes`
+export const loadingDotsAnimation = keyframes`
     0%, 80%, 100% {
       transform: scale(0);
       opacity: 0;
@@ -485,7 +514,7 @@ export  const LoadingDotsContainer = styled.div`
     }
   `;
 
-export  const Dot = styled.span`
+export const Dot = styled.span`
     display: inline-block;
     width: 8px;
     height: 8px;
@@ -504,7 +533,7 @@ export  const Dot = styled.span`
     }
   `;
 
-export  const MessageWrapper = styled.div`
+export const MessageWrapper = styled.div`
 
   display:flex;
   flex-direction:row  ;

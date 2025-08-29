@@ -8,6 +8,8 @@ import { useActions } from '../../common/useActions';
 import { useLogOutMutation } from '../../redux_toolkit/api/authApi';
 import Cookies from 'js-cookie';
 import logo from "../../image/Logo.png"
+import { StyledButtonChat } from '../../common/styles/chat.styles';
+import { Tooltip } from '../Tooltip/Tooltip';
 const HeaderContainer = styled.header`
   background: #13233D;
  // Темно-синий цвет фона
@@ -60,13 +62,7 @@ const Button = styled.button`
     text-align: center; // Центрирование текста
   }
 `;
-export const ButtonChat = styled(Button)`
-padding:1px 6px 1px 6px;
- transition: background-color 0.3s;
-&:hover {
- background-color:rgb(179, 179, 179); // Цвет кнопки при наведении
-}
-`
+
 const ButtonIn = styled(Button)`
 background:#B2CEE2;
 color:black;
@@ -106,7 +102,11 @@ const Header: React.FC = () => {
   return (
     <HeaderContainer style={{fontFamily:"Montserrat Alternates"}}>
       <FuncBlock>
-        <ButtonChat><img onClick={() => AddChat(1)} src={message} title='New Chat' alt="" /></ButtonChat>
+        <Tooltip text="Новый чат" position='bottom'>
+                  <StyledButtonChat onClick={() => AddChat(1)}>
+                    <img style={{width:"40px",height:"40px"}} src={message} alt="Chat" />
+                  </StyledButtonChat>
+                </Tooltip>
         <div style={{display:"flex",alignItems:"center"}}>
           <img src={logo} alt="logo" />
           <Title>Mindsy</Title>
