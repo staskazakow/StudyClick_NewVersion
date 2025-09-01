@@ -314,8 +314,9 @@ export const InputBlock = styled.input`
     border-radius: 30px;
     border: none;
     padding: 10px 20px;
-    width: 100%;
+    width: 99%;
     box-sizing: border-box;
+    margin:2px;
     &:focus {
       outline: none;
       box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);

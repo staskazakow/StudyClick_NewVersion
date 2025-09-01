@@ -139,9 +139,6 @@ const LoginApp: React.FC<LoginAppProps> = () => {
     setShowAssistants(prev => !prev);
   };
 
-  const toggleSidebar = (): void => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === "Enter") {
@@ -161,8 +158,8 @@ const LoginApp: React.FC<LoginAppProps> = () => {
 
   const HandleChat = (id: string | number) => {
     const numericId = Number(id);
-    localStorage.setItem("chat_id", numericId.toString());
-    if (chats) {
+    localStorage.setItem("chat_id", numericId.toString()); 
+    if (id || id === 0) {
       const selectedChat = chatsFromStore.find((chat: Chat) => chat.id === numericId);
       if (selectedChat) {
         setCurrentChatObj(selectedChat);
@@ -209,7 +206,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
 
   useEffect(() => {
     const storedChatId = localStorage.getItem("chat_id");
-    if (storedChatId && chats) {
+    if (storedChatId) {
       HandleChat(storedChatId);
       SetField()
     }
@@ -276,7 +273,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
              
               {isMobile ? "" :
               <TokenBlock>
-                <img src={plus}/>
+                <img src={plus} onClick={() => window.location.href = "tarif"}/>
                 <div>{tokens ? tokens.available_tokens : ""} токенов</div>
               </TokenBlock>
               }
@@ -347,7 +344,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                         <div style={{ display: "flex", alignItems: "center", gap: "3px", marginTop: "5px" }}>
                           {/* Conditionally render Label/Input or Button with onClick */}
                           {file === null ? (
-                            <Tooltip text="Прикрепить файл" position='bottom'>
+                            <Tooltip text="Прикрепить файл" position='top'>
                               <label htmlFor="file-input">
                                 <Button as="span" type="button">
                                   <img src={screpka} alt="Прикрепить" />Закрепить
@@ -355,7 +352,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                               </label>
                             </Tooltip>
                           ) : (
-                            <Tooltip text="Открепить файл" position='bottom'>
+                            <Tooltip text="Открепить файл" position='top'>
                               <Button type="button" onClick={() => setFile(null)}>
                                 <img src={screpka} alt="Открепить" />Открепить
                               </Button>
@@ -369,7 +366,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                             accept='.pdf,.docx'
                           />
                           <Button onClick={() => sendMessage()}>Отправить</Button>
-                          <Tooltip text="Поиск по интернету" position='bottom'>
+                          <Tooltip text="Поиск по интернету" position='top'>
                             {OnSearch ? (
                               <Button onClick={() => SearchQuerry()} style={{ backgroundColor: "#3A4F99" }}>Поиск</Button>
                             ) : (

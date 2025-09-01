@@ -40,7 +40,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         break;
       case "bottom":
         y = rect.bottom + 8;
-        x = rect.left + rect.width / 2;
+        x = rect.left + rect.width;
         break;
       case "left":
         x = rect.left - 8;

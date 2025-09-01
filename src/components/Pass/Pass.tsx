@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router'; // Corrected import
-import left from "../../image/RightArrow.svg"
+import { NavLink } from 'react-router';
+import left from "../../image/RightArrow.svg";
 import { useCreatePaymentMutation } from '../../redux_toolkit/api/yookassaApi';
 
 // --- Styled Components ---
@@ -11,11 +11,10 @@ const PageContainer = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 40px 20px;
-    background-color: #E5F3FF; /* Light Blue background */
+    background-color: #E5F3FF;
     min-height: 100vh;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif; /* Consistent font */
-    
+    font-family: 'Arial', sans-serif;
 `;
 
 const MainTitle = styled.h1`
@@ -23,7 +22,7 @@ const MainTitle = styled.h1`
     color: #333;
     margin-bottom: 30px;
     text-align: center;
-    font-weight: bold; /* Emphasize the title */
+    font-weight: bold;
 
     @media (max-width: 768px) {
         font-size: 24px;
@@ -37,8 +36,9 @@ const CardsContainer = styled.div`
     gap: 20px;
     width: 100%;
     max-width: 1200px;
-    justify-items: center;
-    padding: 0 20px; /* Add horizontal padding */
+    justify-items: stretch;
+    align-items: stretch;
+    padding: 0 20px;
 
     @media (max-width: 1240px) {
         grid-template-columns: 1fr 1fr;
@@ -47,12 +47,12 @@ const CardsContainer = styled.div`
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
     }
-     
 `;
 
 const Card = styled.div`
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     background-color: #fff;
     border-radius: 15px;
     padding: 25px;
@@ -60,19 +60,26 @@ const Card = styled.div`
     text-align: center;
     box-sizing: border-box;
     width: 100%;
-    max-width: 320px;
-    border: 2px solid #f0f0f0; /* Subtle border */
-    transition:0.5s;
+    border: 2px solid #f0f0f0;
+    transition: 0.3s;
 
-    @media (max-width: 1240px) {
-        max-width: 450px;
-    }
-
-    @media (max-width: 768px) {
-        max-width: 100%;
-    }
     &:hover {
-        border:2px solid blue;
+        border: 2px solid blue;
+    }
+`;
+
+const CardContent = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    > * {
+        margin-bottom: 15px;
+    }
+
+    > *:last-child {
+        margin-bottom: 0;
     }
 `;
 
@@ -81,20 +88,20 @@ const CardTitle = styled.h3`
     color: #333;
     margin-top: 0;
     margin-bottom: 10px;
-    font-weight: 600; /* Slightly bolder */
+    font-weight: 600;
 `;
 
 const CardDescription = styled.p`
     font-size: 15px;
     color: #666;
     margin-bottom: 15px;
-    line-height: 1.4; /* Improve readability */
+    line-height: 1.4;
 `;
 
 const Price = styled.div`
     font-size: 26px;
     font-weight: bold;
-    color: black; /* Green price color */
+    color: black;
     margin-bottom: 15px;
 `;
 
@@ -111,7 +118,7 @@ const CardButton = styled.button<CardButtonProps>`
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 
     &:hover {
         background-color: ${props => props.isPrimary ? '#1e7e34' : '#0056b3'};
@@ -127,7 +134,7 @@ const FeaturesList = styled.ul`
     text-align: left;
     padding-left: 25px;
     margin-bottom: 20px;
-    list-style-type: disc; /* Use filled circles */
+    list-style-type: disc;
 `;
 
 const FeatureItem = styled.li`
@@ -141,7 +148,6 @@ const HelpText = styled.p`
     font-size: 13px;
     color: #777;
     text-align: center;
-    margin-top: auto;
 `;
 
 const BackButton = styled.div`
@@ -161,13 +167,13 @@ const BackButton = styled.div`
         }
     }
     img {
-        width: 24px; /* Adjust image size */
+        width: 24px;
         height: 24px;
-        margin-right: 8px; /* Space between image and text */
+        margin-right: 8px;
     }
 `;
 
-// --- Tariff Data (Enhanced) ---
+// --- Tariff Data ---
 const tariffs = [
     {
         title: 'Бесплатно',
@@ -228,45 +234,53 @@ const tariffs = [
 ];
 
 // --- Component ---
-
 const TariffPage = () => {
-    const helpText = 'Мне нужна помощь с оплатой или выставлением счета'
-    const [createPayments,{data}] = useCreatePaymentMutation()
+    const helpText = 'Мне нужна помощь с оплатой или выставлением счета';
+    const [createPayments,{data}] = useCreatePaymentMutation();
+
     const handleButton = (tariff:any) => {
-        createPayments({
-            subscription_plan_id:tariff.id
-        })
-    }
+        createPayments({ subscription_plan_id: tariff.id });
+    };
+
     useEffect(() => {
         if (data) {
-            window.location.href = data.confirmation_url
+            window.location.href = data.confirmation_url;
         }
+    }, [data]);
 
-    },[data])
     return (
         <PageContainer>
             <BackButton>
                 <NavLink style={{color:"black"}} to={"/"}>
-                <img style={{rotate:"180deg"}} src={left} alt="Go Back" />
-                 Вернуться назад
+                    <img style={{rotate:"180deg"}} src={left} alt="Go Back" />
+                    Вернуться назад
                 </NavLink>
             </BackButton>
             <MainTitle>Обновите свой план</MainTitle>
             <CardsContainer>
                 {tariffs.map((tariff, index) => (
                     <Card key={index}>
-                        <CardTitle>{tariff.title}</CardTitle>
-                        <CardDescription>{tariff.description}</CardDescription>
-                        <Price>{tariff.price}</Price>
-                        <CardButton onClick={() => handleButton(tariff)} isPrimary={tariff.isPrimary} disabled={tariff.isPrimary}>
-                            {tariff.buttonText}
-                        </CardButton>
-                        <FeaturesList>
-                            {tariff.features.map((feature, i) => (
-                                <FeatureItem key={i}>{feature}</FeatureItem>
-                            ))}
-                        </FeaturesList>
-                        <HelpText>{helpText}</HelpText>
+                        <CardContent>
+                            <CardTitle>{tariff.title}</CardTitle>
+                            <CardDescription>{tariff.description}</CardDescription>
+                            <Price>{tariff.price}</Price>
+                            <FeaturesList>
+                                {tariff.features.map((feature, i) => (
+                                    <FeatureItem key={i}>{feature}</FeatureItem>
+                                ))}
+                            </FeaturesList>
+                        </CardContent>
+
+                        <div>
+                            <CardButton
+                                onClick={() => handleButton(tariff)}
+                                isPrimary={tariff.isPrimary}
+                                disabled={tariff.isPrimary}
+                            >
+                                {tariff.buttonText}
+                            </CardButton>
+                            <HelpText>{helpText}</HelpText>
+                        </div>
                     </Card>
                 ))}
             </CardsContainer>
@@ -275,4 +289,3 @@ const TariffPage = () => {
 };
 
 export default TariffPage;
-

@@ -5,7 +5,7 @@ let initialState: state = {
                 created_at: "",
                 id: 0,
                 messages: [],
-                study_field: 0,
+                study_field: 52,
                 title: "Новый чат"
             },],
     current_chat: [],

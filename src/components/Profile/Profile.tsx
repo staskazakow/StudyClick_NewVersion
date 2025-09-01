@@ -15,6 +15,9 @@ const Profile = () => {
         await logOut(); // Use async/await with logOut mutation
         setAuth(false);
     };
+    const GoTarif = () => {
+        window.location.href = "tarif"
+    }
     const isLoading = isLoggingOut || isGettingUser;
     return (
         <Wrapper>
@@ -35,7 +38,7 @@ const Profile = () => {
                     </ProfileHeader>
                     <ProfileWrapper>
                         {/* Access subscription name with optional chaining */}
-                        <SettingsButtonPass>{userInfo?.subscription?.name || "Нет подписки"}</SettingsButtonPass>
+                        <SettingsButtonPass onClick={() => GoTarif()}>{userInfo?.subscription?.name || "Нет подписки"}</SettingsButtonPass>
                         <SettingsButton><NavLink to={"/settings"}>Настройки</NavLink></SettingsButton>
                         <SettingsButton><a href="https://t.me/mon_tti1  ">Написать в поддержку</a></SettingsButton>
                         <SettingsButton onClick={HandleLogout}>Выйти</SettingsButton>
