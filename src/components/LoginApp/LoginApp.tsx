@@ -272,10 +272,11 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               </Chats>
              
               {isMobile ? "" :
+              isLeftSidebarOpen ?
               <TokenBlock>
                 <img src={plus} onClick={() => window.location.href = "tarif"}/>
                 <div>{tokens ? tokens.available_tokens : ""} токенов</div>
-              </TokenBlock>
+              </TokenBlock> : ""
               }
               </> 
                : ""}
