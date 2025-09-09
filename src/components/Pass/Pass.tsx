@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router';
 import left from "../../image/RightArrow.svg";
 import { useCreatePaymentMutation } from '../../redux_toolkit/api/yookassaApi';
+import { HelpFunc } from '../../common/HelpFunc';
 
 // --- Styled Components ---
 
@@ -190,7 +191,7 @@ const tariffs = [
         isPrimary: true,
     },
     {
-        title: 'Тариф «Завтрак с ИИ»',
+        title: '«Завтрак с ИИ»',
         id:2,
         description: 'Отличный вариант для ежедневного общения, «пошутить-поработать» и вкусно залипнуть в текстах.',
         price: '299 рублей',
@@ -204,7 +205,7 @@ const tariffs = [
         isPrimary: false,
     },
     {
-        title: 'Тариф «ИИ не уходит в отпуск»',
+        title: '«ИИ не уходит в отпуск»',
         id:3,
         description: 'Это уже уровень «У меня есть свой ИИ-редактор, психолог, маркетолог и оракул — всё в одном лице». Можно вести блог, компанию и не сходить с ума.',
         price: '499 рублей',
@@ -218,7 +219,7 @@ const tariffs = [
         isPrimary: false,
     },
     {
-        title: 'Тариф «Корпорация Разума»',
+        title: '«Корпорация Разума»',
         id:4,
         description: 'Генерация всех постов в соцсетях на год вперёд (и ещё останется)',
         price: '899 рублей',
@@ -279,7 +280,7 @@ const TariffPage = () => {
                             >
                                 {tariff.buttonText}
                             </CardButton>
-                            <HelpText>{helpText}</HelpText>
+                            <HelpText onClick={() => HelpFunc()}>{helpText}</HelpText>
                         </div>
                     </Card>
                 ))}

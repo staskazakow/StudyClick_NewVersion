@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import logo from "../../image/Logo.png"
 import { StyledButtonChat } from '../../common/styles/chat.styles';
 import { Tooltip } from '../Tooltip/Tooltip';
+import { FooterChatInput } from '../../common/styles/chatInput.styles';
 const HeaderContainer = styled.header`
   background: #13233D;
  // Темно-синий цвет фона
@@ -111,7 +112,14 @@ const Header: React.FC = () => {
           <img src={logo} alt="logo" />
           <Title>Mindsy</Title>
         </div>
+        
       </FuncBlock>
+        <FooterChatInput>
+                <NavLink to="/about">О нас</NavLink>
+                <NavLink to="/terms">Условия</NavLink>
+                <NavLink to='/support'>Поддержка</NavLink>
+                <NavLink to="/price">Цена</NavLink>
+            </FooterChatInput>
       {auth ?
         <div onClick={logOut}>Log out</div>
         : <ButtonContainer>

@@ -188,6 +188,7 @@ export const TokenBlock = styled.div`
   display:flex;
   justify-content: flex-start;
   gap:11px;
+  align-items: stretch;
   >img{
     margin-top:13px;
     margin-left:23px;
@@ -426,6 +427,12 @@ export const AssistantsList = styled.ul`
     @media (max-width: ${breakpoints.mobile}) {
       height: 20vh;
       width:90%;
+    }
+    .prompt{
+    display:none;
+    max-height:50vh;
+    overflow-y: hidden;
+    background-color:  #ECECE5;
     }
   `;
 

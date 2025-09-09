@@ -4,6 +4,7 @@ import { NavLink } from 'react-router';
 
 import { WrapperAbout, Back } from '../About/About';
 import Footer from '../Footer/Footer';
+import { HelpFunc } from '../../common/HelpFunc';
 
 // Максимальная ширина контейнера для карточек
 const MAX_CONTAINER_WIDTH = '1280px'; 
@@ -172,6 +173,7 @@ const HelpText = styled.div`
 `;
 
 const Price = () => {
+ 
   return (
     <div>
       <WrapperAbout>
@@ -201,7 +203,7 @@ const Price = () => {
               </FeaturesList>
             </CardContent>
             <ActionButton>Текущий план</ActionButton>
-            <HelpText>Мне нужна помощь с оплатой или выставлением счета</HelpText>
+            <HelpText onClick={() => HelpFunc()}>Мне нужна помощь с оплатой или выставлением счета</HelpText>
           </Card>
 
           <Card>
@@ -219,7 +221,7 @@ const Price = () => {
               </FeaturesList>
             </CardContent>
             <ActionButton>Базовый</ActionButton>
-            <HelpText>Мне нужна помощь с оплатой или выставлением счета</HelpText>
+            <HelpText onClick={() => HelpFunc()}>Мне нужна помощь с оплатой или выставлением счета</HelpText>
           </Card>
 
           <Card>
@@ -237,7 +239,7 @@ const Price = () => {
               </FeaturesList>
             </CardContent>
             <ActionButton>Расширенный</ActionButton>
-            <HelpText>Мне нужна помощь с оплатой или выставлением счета</HelpText>
+             <HelpText onClick={() => HelpFunc()}>Мне нужна помощь с оплатой или выставлением счета</HelpText>
           </Card>
 
           <Card>
@@ -255,7 +257,7 @@ const Price = () => {
               </FeaturesList>
             </CardContent>
             <ActionButton>Премиум</ActionButton>
-            <HelpText>Мне нужна помощь с оплатой или выставлением счета</HelpText>
+            <HelpText onClick={() => HelpFunc()}>Мне нужна помощь с оплатой или выставлением счета</HelpText>
           </Card>
         </CardsContainer>
       </WrapperAbout>

@@ -43,7 +43,6 @@ overflow-x:hidden;
 export const MainWrapper = styled.div`
   display: flex;
   height: 100vh;
-  justify-content: space-between;
   flex-direction: column;
 `;
 
@@ -101,7 +100,7 @@ const Main = () => {
     <div style={{ height: "100vh" }}>
       <MainWrapper>
         <Header />
-        <div style={{display:'flex',flexDirection:'column'}}>
+        <div style={{display:'flex',flexDirection:'column',height:"100vh",justifyContent:"flex-end"}}>
           {message_data.length === 0 && <MainContent />}
           <ChatInput />
           <Modal isOpen={isOpen} setIsOpen={setIsOpen}/>
@@ -132,6 +131,8 @@ const App: React.FC = () => {
     isAuth()
   }, []);
   const auth = useSelector((state: state) => state.app.auth)
+  // const isLoading = false ----- раскоментируй если нужно поменять что то ,где сервер не нужен
+  // const auth = false
   return (
     <AppContainer>
       {isLoading ? (

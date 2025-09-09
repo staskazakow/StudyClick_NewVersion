@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import background from "../../image/Backgrond.png"
 export const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -16,6 +16,7 @@ export const PageContainer = styled.div`
 
 export const MessageWrapper = styled.div`
     width: 100%;
+    max-height:47vh;
     max-width: 80vw; /* Максимальная ширина на десктопах */
     flex-grow: 1; /* Растягивается, чтобы занять всё доступное пространство */
     overflow-y: auto; /* Скролл для сообщений */
@@ -30,8 +31,12 @@ export const MessageWrapper = styled.div`
     &::-webkit-scrollbar {
         width: 8px;
     }
-
     @media (max-width: 768px) {
+        max-height:55vh;
+        max-width: 95vw; /* Увеличиваем ширину на планшетах/мобильных */
+        }
+    @media (max-height: 768px) {
+         max-height:40vh;
         max-width: 95vw; /* Увеличиваем ширину на планшетах/мобильных */
     }
 `;
@@ -42,7 +47,7 @@ export const InputContainer = styled.div`
     padding: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 640px; /* Ограничение ширины на десктопах */
+    max-width: 700px; /* Ограничение ширины на десктопах */
     box-sizing: border-box;
     margin: 0 auto; /* Центрирование */
 
@@ -58,7 +63,6 @@ export const TextArea = styled.textarea<{ hasFocus: boolean }>`
     border: none;
     outline: none;
     border-radius: 15px; /* Меньше скругление */
-    padding: 10px;
     font-size: 16px;
     margin-bottom: 10px; /* Уменьшен отступ */
     resize: none;
@@ -154,46 +158,54 @@ export const HelperDropdown = styled.div<HelperDropdownProps>`
         }
     }
 `;
+export const DecorItem = styled.div`
+    display: flex;
 
+`
 export const InputDecor = styled.div`
     margin-top: 10px;
-    width: max-content;
-    height: auto; /* Высота определяется контентом */
-    padding: 8px; /* Немного уменьшен паддинг */
+    max-width: 700px;
+    // height:500px;
+    border-radius:200px;
+    padding: 8px;
     border-radius: 20px;
-    display: flex;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    background: linear-gradient(180deg, rgba(210, 224, 239, 0.1), rgba(186, 221, 253, 0.5) 50%, rgba(154, 187, 227, 0.2) 100%);
-    box-shadow: 0 2px 10px rgba(98, 153, 208, 0.5);
+    background: url(${background});
+    background-size: 100% 100%;
+    background-position: top;
+    background-repeat: no-repeat;
+
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
-    align-self: center; /* Центрируем по горизонтали */
+    align-self: center;
 
     &::before {
         content: "";
         position: absolute;
         inset: 0;
-        background: inherit;
-        filter: blur(15px); /* Уменьшен блюр для лучшей производительности на мобильных */
+        filter: blur(15px); /* Размытие фона */
         z-index: 1;
     }
+
     > * {
         position: relative;
-        z-index: 2;
+        z-index: 2; /* Элементы поверх размытого слоя */
     }
-
+     @media (max-width: 1300px) {
+        // width: 60vw;
+    }
     @media (max-width: 768px) {
-    display:none;
-        border-radius: 15px; /* Меньше скругление */
-        padding: 6px; /* Ещё меньше паддинг */
+        display: none;
+        border-radius: 15px;
+        padding: 6px;
         gap: 6px;
-         max-width: 640px; /* Та же максимальная ширина, что у InputContainer */
+        max-width: 640px;
     }
 `;
-
 export const FooterChatInput = styled.footer`
     display: flex;
     gap: 32px; /* Уменьшен гэп для десктопов */
@@ -211,6 +223,9 @@ export const FooterChatInput = styled.footer`
 
     @media (max-width: 600px) {
         gap: 16px;
+        margin-bottom:20px;
+        margin-top: 10px;
+
         a {
             font-size: 12px;
             padding: 2px 5px; /* Небольшой паддинг для удобства нажатия */
@@ -219,21 +234,25 @@ export const FooterChatInput = styled.footer`
 `;
 
 export const Info = styled.div`
+    display:flex;
+    align-items:center;
+    gap:10px;
     background: transparent;
     color: #fff;
     border-radius: 16px; /* Более округлые кнопки-инфо */
     padding: 8px 16px;
-    font-size: 14px;
+    font-size: 10px;
     cursor: pointer;
     transition: background 0.2s, box-shadow 0.2s;
-    
+    font-weight:700;
     &:hover {
         background: rgba(255,255,255,0.15);
         box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); /* Более заметная тень при ховере */
     }
+    
     @media (max-width: 600px) {
         font-size: 11px;
-        padding: 6px 12px;
+        padding: 6px 10px;
         border-radius: 12px;
     }
 `;

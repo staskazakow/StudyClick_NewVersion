@@ -14,8 +14,8 @@ import { useCreateMessageNoLoginMutation, useGetFieldsQuery } from '../../redux_
 import { LoadingDots} from '../LoginApp/LoginApp';
 import stop from "../../image/stop.png"
 import { MessagesItem } from '../../common/styles/chat.styles';
-import { BtnWrapper,MessageWrapper, Button, field, FileInput, FooterChatInput, HelperButton, HelperDropdown, Info, InputContainer, InputDecor, PageContainer, Search, TextArea } from '../../common/styles/chatInput.styles';
-
+import { BtnWrapper,MessageWrapper, Button, field, FileInput, FooterChatInput, HelperButton, HelperDropdown, Info, InputContainer, InputDecor, PageContainer, Search, TextArea, DecorItem } from '../../common/styles/chatInput.styles';
+import key from "../../image/Key.png"
 
 // --- Компонент React ---
 
@@ -221,19 +221,16 @@ const toggleRecording = () => {
                 </BtnWrapper>
             </InputContainer>
 
-            <InputDecor>
+            <InputDecor >
                 <Info>🔍 Поиск по интернету</Info>
-                <Info>📂 Работа с файлами</Info>
-                <Info>🖼️ Распознавание изображений</Info>
+                <Info style={{color:"#ECECE580"}}><img src={key} alt="" />Работа с файлами PDF, XLSX, DOCX, CSV, TXT</Info>
+                <Info style={{color:"#ECECE580"}}><img src={key} alt="" /> Распознавание изображений</Info>
+
                 <Info>🎙️ Ввод голосом</Info>
+                <Info style={{color:"#ECECE580"}}><img src={key} alt="" />Сохранение диалога</Info>
+                <Info style={{color:"#ECECE580"}}  ><img src={key} alt="" />Работа с ссылками </Info>
             </InputDecor>
 
-            <FooterChatInput>
-                <NavLink to="/about">О нас</NavLink>
-                <NavLink to="/terms">Условия</NavLink>
-                <NavLink to='/support'>Поддержка</NavLink>
-                <NavLink to="/price">Цена</NavLink>
-            </FooterChatInput>
         </PageContainer>
     );
 };

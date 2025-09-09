@@ -210,8 +210,29 @@ const LoginApp: React.FC<LoginAppProps> = () => {
       HandleChat(storedChatId);
       SetField()
     }
-
+    
   }, [chatsFromStore]); // Added 'chats' to the dependency array
+ 
+  useEffect(() => {
+  if (!isLoading && chatsFromStore) {
+    if (chatsFromStore.length === 0) {
+      // если нет чатов → создаём новый
+      AddChatLogin(0); 
+      localStorage.setItem("chat_id", "0");
+      SetCurrentChatMessages([]);
+    } else {
+      // если есть чаты → выбираем первый
+      const storedChatId = localStorage.getItem("chat_id");
+      if (storedChatId) {
+        HandleChat(storedChatId);
+        SetField();
+      } else {
+        const firstChat = chatsFromStore[0];
+        HandleChat(firstChat.id);
+      }
+    }
+  }
+}, [isLoading, chatsFromStore]);
   const SearchQuerry = () => {
     setOnSearch(!OnSearch)
   }
@@ -275,7 +296,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
               isLeftSidebarOpen ?
               <TokenBlock>
                 <img src={plus} onClick={() => window.location.href = "tarif"}/>
-                <div>{tokens ? tokens.available_tokens : ""} токенов</div>
+                <div style={{cursor:"pointer"}} onClick={() => window.location.href = "tarif"}>{tokens ? tokens.available_tokens : ""} токенов</div>
               </TokenBlock> : ""
               }
               </> 
@@ -404,11 +425,9 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                       )}
                       {
                         isMobile ? "" : <PromptsWrapper>
-                          <ToogleButton onClick={() => setIsTooglePrompt(!isTooglePrompt)}>Показать примеры запросов</ToogleButton>
                         {
-                        prompts ?
-                        isTooglePrompt ?
-                        <AssistantsList>
+                    
+                        <AssistantsList className='prompt'>
                           {prompts && prompts.map((e: PromptItem) => (
                             <Asisstant
                               key={e.id}
@@ -418,7 +437,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                             </Asisstant>
                           ))}
                         </AssistantsList>
-                         : "" : ""}
+}
                       </PromptsWrapper>
                       }
                      
