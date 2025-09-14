@@ -12,6 +12,9 @@ export const chatApi = authApi.injectEndpoints({
         getChats: builder.query({
             query: () => "chats"
         }),
+        AutoRename:builder.query({
+            query: (credentials?) => `chats/${credentials}/title`
+        }),
         changeNameChat:builder.mutation({
             query:(credentials) => ({
                 url:`chats/${credentials.id}/update/`,
@@ -30,4 +33,4 @@ export const chatApi = authApi.injectEndpoints({
         })
     })
 })
-export const {useCreateMessageMutation,useGetChatsQuery,useChangeNameChatMutation,useDeleteChatMutation,useGetTokensQuery} = chatApi
+export const {useCreateMessageMutation,useGetChatsQuery,useChangeNameChatMutation,useDeleteChatMutation,useGetTokensQuery,useLazyAutoRenameQuery} = chatApi

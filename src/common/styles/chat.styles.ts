@@ -186,10 +186,10 @@ export const TokenBlock = styled.div`
   box-shadow: 0px 0px 4px 0px #13233D;
   height:7vh;
   display:flex;
-  justify-content: flex-start;
+  align-items: center;
   gap:11px;
-  align-items: stretch;
-  >img{
+  justify-content: center;
+  >a > img{
     margin-top:13px;
     margin-left:23px;
     width:20px;
@@ -199,10 +199,10 @@ export const TokenBlock = styled.div`
     border-radius:50%;
     cursor:pointer;
   }
-  >div{
+  >a > div{
   display:flex;
   align-items: center;
-  margin-bottom:3px;
+  margin-top:5px;
   }
   `
 export const DialogWindow = styled.div<StyledProps>`

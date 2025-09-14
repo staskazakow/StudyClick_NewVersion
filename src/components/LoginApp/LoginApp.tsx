@@ -8,7 +8,7 @@ import { Chat, Message } from '../../redux_toolkit/reducers/ChatSlice';
 import { useGetFieldsQuery, useGetPromptQuery } from '../../redux_toolkit/api/fieldsAli';
 import { data, NavLink } from 'react-router';
 import RightArrow from "../../image/RightArrow.svg"
-import { useCreateMessageMutation, useGetChatsQuery, useGetTokensQuery } from '../../redux_toolkit/api/chatsApi';
+import {useCreateMessageMutation, useGetChatsQuery, useGetTokensQuery, useLazyAutoRenameQuery } from '../../redux_toolkit/api/chatsApi';
 import DialogItem from '../Dialog/Dialog';
 import { LoadingOverlay, LoadingSpinner } from '../../App';
 import screpka from "../../image/screpka.png"
@@ -50,6 +50,9 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   const [OnSearch, setOnSearch] = useState(false)
   const {data:tokens,refetch:getToken} = useGetTokensQuery(0)
   const {data:prompts,refetch:getPrompt} = useGetPromptQuery(localStorage.getItem("study_field_id"))
+  const [currentChatObj, setCurrentChatObj] = useState<Chat | null>(null);
+  const [triggerRename, { data: ChatName, isLoading: isRenaming }] = useLazyAutoRenameQuery();
+  const {RenameChat}  = useActions()
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
@@ -59,6 +62,8 @@ const LoginApp: React.FC<LoginAppProps> = () => {
     // Reset the file input value to allow selecting the same file again
     e.target.value = '';
   };
+  
+
 
   useEffect(() => {
     const checkMobile = () => {
@@ -71,11 +76,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (chats && chats?.length != 0) {
-      SetChats(chats);
-    }
-  }, [chats, SetChats]);
+
 
   const messagesFromStore: Array<Message> = useSelector((state: state) => state.chat.current_chat);
   // messagesFromStore.length > 0 ? : SetCurrentChatMessages()
@@ -154,12 +155,24 @@ const LoginApp: React.FC<LoginAppProps> = () => {
     setFieldName(name)
   };
 
-  const [currentChatObj, setCurrentChatObj] = useState<Chat | null>(null);
-
+  
+  useEffect(() => {
+    if(messagesFromStore.length === 2){
+    let chatId = localStorage.getItem("chat_id")
+    const RenameFunc = async () => {
+      await triggerRename(chatId)
+    }
+    RenameFunc()
+    if(ChatName){
+      RenameChat(chatId)
+    }
+  }
+  },[messagesFromStore,ChatName])
   const HandleChat = (id: string | number) => {
+    // debugger
     const numericId = Number(id);
     localStorage.setItem("chat_id", numericId.toString()); 
-    if (id || id === 0) {
+    if (id || id == 0) {
       const selectedChat = chatsFromStore.find((chat: Chat) => chat.id === numericId);
       if (selectedChat) {
         setCurrentChatObj(selectedChat);
@@ -203,34 +216,28 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   }
 
   // Simplified or removed handleAttachClick as logic is now in render
-
   useEffect(() => {
     const storedChatId = localStorage.getItem("chat_id");
     if (storedChatId) {
       HandleChat(storedChatId);
       SetField()
+    }else{
+      localStorage.setItem("chat_id", "0");
+      HandleChat(0);
+      SetField()
     }
     
   }, [chatsFromStore]); // Added 'chats' to the dependency array
- 
   useEffect(() => {
+    
   if (!isLoading && chatsFromStore) {
     if (chatsFromStore.length === 0) {
       // если нет чатов → создаём новый
+      
       AddChatLogin(0); 
-      localStorage.setItem("chat_id", "0");
+      // localStorage.setItem("chat_id", "0");
       SetCurrentChatMessages([]);
-    } else {
-      // если есть чаты → выбираем первый
-      const storedChatId = localStorage.getItem("chat_id");
-      if (storedChatId) {
-        HandleChat(storedChatId);
-        SetField();
-      } else {
-        const firstChat = chatsFromStore[0];
-        HandleChat(firstChat.id);
-      }
-    }
+    } 
   }
 }, [isLoading, chatsFromStore]);
   const SearchQuerry = () => {
@@ -239,7 +246,11 @@ const LoginApp: React.FC<LoginAppProps> = () => {
   const ToogleLeftSidebarOpen = () => {
     setIsLeftSidebarOpen(!isLeftSidebarOpen)
   }
-
+    useEffect(() => {
+    if (chats && chats?.length != 0) {
+      SetChats(chats);
+    }
+  }, [chats, SetChats]);
   return (
     <Wrapper>
       {isLoading ?
@@ -250,7 +261,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
           <MessageWrapper style={{ height: "100vh" }}>
             <ChatWindow isOpen={isLeftSidebarOpen}>
               {isLeftSidebarOpen ? <NavBlock>
-                <Tooltip text="Новый чат" position='bottom'>
+                <Tooltip isMobile = {isMobile} text="Новый чат" position='bottom'  >
                   <StyledButtonChat onClick={() => AddChatLogin(0)}>
                     <img style={{width:"30px",height:"30px"}} src={ChatBtn} alt="Chat" />
                   </StyledButtonChat>
@@ -260,14 +271,14 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     <img src={logo} alt='logo' />
                   </a>
                 </LogoCont>
-                <Tooltip text={isLeftSidebarOpen ? "Скрыть боковую панель" : "Открыть боковую панель"} position='right'>
+                <Tooltip isMobile = {isMobile} text={isLeftSidebarOpen ? "Скрыть боковую панель" : "Открыть боковую панель"} position='right'>
                   <ArrowLeft isOpen={isLeftSidebarOpen} onClick={ToogleLeftSidebarOpen} isCollapsed={isLeftSidebarOpen}>
                     <img src={RightArrow} alt="Toggle Sidebar" />
                   </ArrowLeft>
                 </Tooltip>
               </NavBlock> :
                 <MobileSidebar>
-                  <Tooltip text={isLeftSidebarOpen ? "Скрыть боковую панель" : "Открыть боковую панель"} position='right'>
+                  <Tooltip isMobile = {isMobile} text={isLeftSidebarOpen ? "Скрыть боковую панель" : "Открыть боковую панель"} position='right'>
                     <ArrowLeft isOpen={isLeftSidebarOpen} onClick={ToogleLeftSidebarOpen} isCollapsed={isLeftSidebarOpen}>
                       <img src={RightArrow} alt="Toggle Sidebar" />
                     </ArrowLeft>
@@ -281,8 +292,12 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     <img src={ChatBtn} style={{width:"30px",height:"30px"}} alt="Chat" />
                   </StyledButtonChat>
                   {isMobile ? <TokenBlock style={{boxShadow:"none",height:"max-content"}}>
-                <img src={plus} style={{marginBottom:"13px"}}/>
-                <div>{tokens ? tokens.available_tokens : ""} токенов</div>
+                <NavLink to={"tarif"}>
+                <img src={plus}  onClick={() => window.location.href = "tarif"}/>
+                </NavLink>
+                <NavLink style={{textDecoration:"none",color:"black"}}  to={"tarif"}>
+                <div style={{cursor:"pointer"}}>{tokens ? tokens.available_tokens : ""} токенов</div>
+                </NavLink>
               </TokenBlock>  : ""}
                 </MobileSidebar>}
               {isSidebarOpen ?<>
@@ -294,9 +309,13 @@ const LoginApp: React.FC<LoginAppProps> = () => {
              
               {isMobile ? "" :
               isLeftSidebarOpen ?
-              <TokenBlock>
-                <img src={plus} onClick={() => window.location.href = "tarif"}/>
-                <div style={{cursor:"pointer"}} onClick={() => window.location.href = "tarif"}>{tokens ? tokens.available_tokens : ""} токенов</div>
+              <TokenBlock style={{paddingRight:"20px"}}>
+                <NavLink to={"tarif"}>
+                <img  src={plus}  onClick={() => window.location.href = "tarif"}/>
+                </NavLink>
+                <NavLink style={{textDecoration:"none",color:"black"}}  to={"tarif"}>
+                <div style={{cursor:"pointer"}}>{tokens ? tokens.available_tokens : ""} токенов</div>
+                </NavLink>
               </TokenBlock> : ""
               }
               </> 
@@ -318,13 +337,13 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                     <NavLink style={{textDecoration:"none"}} to={"/tarif"}>
                     <PlanUpped>Улучшить план</PlanUpped>
                     </NavLink>
-                    <Tooltip text="Профиль" position='bottom'>
+                    <Tooltip isMobile = {isMobile} text="Профиль" position='bottom'>
                       <NavLink to={"/profile"} style={{ cursor: "pointer", backgroundColor: "#13233D", borderRadius: "30px" }}>
                         <img src={user} alt="User" style={{ width: '29px', height: '29px', display: 'block', padding: "4px" }} />
                       </NavLink>
                     </Tooltip>
                     {!isMobile && (
-                      <Tooltip text={isPromptCollapsed ?'Открыть боковую панель'  : 'Свернуть боковую панель'} position='left'>
+                      <Tooltip isMobile = {isMobile} text={isPromptCollapsed ?'Открыть боковую панель'  : 'Свернуть боковую панель'} position='left'>
                       <CollapseButton
                         isCollapsed={isPromptCollapsed}
                         onClick={togglePrompt}
@@ -366,7 +385,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                         <div style={{ display: "flex", alignItems: "center", gap: "3px", marginTop: "5px" }}>
                           {/* Conditionally render Label/Input or Button with onClick */}
                           {file === null ? (
-                            <Tooltip text="Прикрепить файл" position='top'>
+                            <Tooltip isMobile = {isMobile} text="Прикрепить файл" position='top'>
                               <label htmlFor="file-input">
                                 <Button as="span" type="button">
                                   <img src={screpka} alt="Прикрепить" />Закрепить
@@ -374,7 +393,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                               </label>
                             </Tooltip>
                           ) : (
-                            <Tooltip text="Открепить файл" position='top'>
+                            <Tooltip isMobile = {isMobile} text="Открепить файл" position='top'>
                               <Button type="button" onClick={() => setFile(null)}>
                                 <img src={screpka} alt="Открепить" />Открепить
                               </Button>
@@ -388,9 +407,9 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                             accept='.pdf,.docx'
                           />
                           <Button onClick={() => sendMessage()}>Отправить</Button>
-                          <Tooltip text="Поиск по интернету" position='top'>
+                          <Tooltip text="Поиск по интернету" position='top' isMobile = {isMobile}>
                             {OnSearch ? (
-                              <Button onClick={() => SearchQuerry()} style={{ backgroundColor: "#3A4F99" }}>Поиск</Button>
+                              <Button onClick={() => SearchQuerry()} style={{ backgroundColor: "#3A4F99"}}>Поиск</Button>
                             ) : (
                               <Button onClick={() => SearchQuerry()} style={{ backgroundColor: "white" }}>Поиск</Button>
                             )}
@@ -424,7 +443,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                         </AssistantsList>
                       )}
                       {
-                        isMobile ? "" : <PromptsWrapper>
+                        isMobile ? "" : prompts ? <PromptsWrapper>
                         {
                     
                         <AssistantsList className='prompt'>
@@ -438,7 +457,7 @@ const LoginApp: React.FC<LoginAppProps> = () => {
                           ))}
                         </AssistantsList>
 }
-                      </PromptsWrapper>
+                      </PromptsWrapper> : ""
                       }
                      
                     </>

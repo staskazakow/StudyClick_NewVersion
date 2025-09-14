@@ -203,6 +203,9 @@ const [ChangeName,{isLoading}] = useChangeNameChatMutation()
     deleteChat({id:element.id})
     DeleteChat(element.id)
     setIsMenuOpen(false);
+    localStorage.setItem("chat_id","0")
+    handle(0)
+    
   };
 
   useEffect(() => {
@@ -256,7 +259,7 @@ const [ChangeName,{isLoading}] = useChangeNameChatMutation()
           <OptionsMenuItem role="menuitem" onClick={startRename}>
             Переименовать
           </OptionsMenuItem>
-          <OptionsMenuItem role="menuitem" onClick={handleItemDelete}>
+          <OptionsMenuItem role="menuitem" onClick={(e) => handleItemDelete(e)}>
             Удалить
           </OptionsMenuItem>
         </OptionsMenu>

@@ -87,6 +87,16 @@ color:#c8ccd1;
 font-size:14px;
 color:black;
 `
+const ChatWrapper = styled.div`
+display:flex;
+flex-direction:column;
+height:150vh;
+justify-content:flex-end;
+overflow-y:hidden;
+@media(max-width:768px){
+  height:70vh;
+}
+`
 const Main = () => {
   const message_data:Array<Message> = useSelector((state:state) => state.chat.messages_data)
   const [isOpen, setIsOpen] = useState(false);
@@ -97,14 +107,14 @@ const Main = () => {
     return () => clearTimeout(timer);
   }, []); // пустой массив зависимостей — только при МОНТАЖе
   return (
-    <div style={{ height: "100vh" }}>
+    <div style={{ height: "100vh", }}>
       <MainWrapper>
         <Header />
-        <div style={{display:'flex',flexDirection:'column',height:"100vh",justifyContent:"flex-end"}}>
+        <ChatWrapper >
           {message_data.length === 0 && <MainContent />}
           <ChatInput />
           <Modal isOpen={isOpen} setIsOpen={setIsOpen}/>
-        </div>
+        </ChatWrapper>
       </MainWrapper>
     </div>
   );

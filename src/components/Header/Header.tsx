@@ -103,7 +103,7 @@ const Header: React.FC = () => {
   return (
     <HeaderContainer style={{fontFamily:"Montserrat Alternates"}}>
       <FuncBlock>
-        <Tooltip text="Новый чат" position='bottom'>
+        <Tooltip isMobile = {false} text="Новый чат" position='bottom'>
                   <StyledButtonChat onClick={() => AddChat(1)}>
                     <img style={{width:"40px",height:"40px"}} src={message} alt="Chat" />
                   </StyledButtonChat>

@@ -19,12 +19,14 @@ type TooltipProps = {
   text: string;
   position?: "top" | "right" | "bottom" | "left";
   children: React.ReactNode;
+  isMobile:boolean;
 };
 
 export const Tooltip: React.FC<TooltipProps> = ({
   text,
   position = "top",
   children,
+  isMobile = false,
 }) => {
   const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
 
@@ -56,6 +58,13 @@ export const Tooltip: React.FC<TooltipProps> = ({
   };
 
   const hideTooltip = () => setCoords(null);
+  if (isMobile){
+    return (
+      <>
+      {children}
+      </>
+    )
+  }
 
   return (
     <>
