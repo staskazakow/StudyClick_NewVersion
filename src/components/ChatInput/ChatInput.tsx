@@ -161,6 +161,8 @@ const toggleRecording = () => {
     const SearchQuerry = ( ) => {
         setOnSearch(!onSearch)
     }
+      // 1. Регулярное выражение для поиска жирного текста (**text**)
+    
     return (
         <PageContainer>
             <MessageWrapper ref={messagesEndRef}>

@@ -16,14 +16,10 @@ const TextComponent: React.FC<Props> = ({ text, element }) => {
 
   return (
     <MessagesItem className={element.role === 'bot' ? 'assistant' : ''}>
-      {/* 3. Отображаем каждую строку в отдельном теге <p> */}
       {lines.map((line, index) => (
         <p key={index}>
-          {/* 4. Каждую строку дополнительно разбираем на обычные и жирные части */}
           {line.split(boldRegex).filter(part => part).map((part, partIndex) => {
-            // 5. Проверяем, является ли часть жирным текстом
             if (part.startsWith('**') && part.endsWith('**')) {
-              // Если да, убираем звездочки и оборачиваем в <strong>
               return <strong key={partIndex}>{part.slice(2, -2)}</strong>;
             }
             // Если это обычный текст, просто возвращаем его
